@@ -12,6 +12,7 @@ if (savePanier === null) {
 } else {
     console.log("je ne suis pas vide") 
     for(let i = 0; i <savePanier.length; i++){
+        //console.log(savePanier[i]);
         document.querySelector("#cart__items").innerHTML += `<article class="cart__item" data-id="${savePanier[i].idProduit}" data-color="${savePanier[i].colorProduit}">
         <div class="cart__item__img">
           <img src="${savePanier[i].imageUrl}" alt="${savePanier[i].altTxt}">
@@ -33,7 +34,7 @@ if (savePanier === null) {
           </div>
         </div>
         </article>`;
-        //console.log(savePanier[i]);
+        
     }
 };
 
