@@ -47,7 +47,7 @@ console.log(choixProduitUser);
 //Déclaration de la variable "savePanier" pour récupérer les données du LocalStorage dans laquelle on met la key "panier" et les values ("choixProduitUser")qui sont dans le localStorage
 //JSON.parse = Convertir les données du localStorage de JSON en Objet JS
 let savePanier = JSON.parse(localStorage.getItem("panier"));
-console.log(savePanier);
+    console.log(savePanier);
 
 //Refactorisation de la fonction ajouter un produit sélectionné dans le localStorage
 const ajoutProduitLocalStorage = () => {
@@ -65,39 +65,3 @@ else {
     console.log(savePanier);
 }
 }); 
-
-
-
-
-
-/*----------------localStorage 1 non renommé ------------------
-//Déclaration de la variable "saveProduit" dans laquelle on met les key et les values qui sont dans le localStorage
-//JSON.parse = Convertir les données du localStorage de JSON en Objet JS
-let saveProduit = JSON.parse(localStorage.getItem("produit"));
-console.log(saveProduit);
-
-//Refactorisation de la fonction ajouter un produit sélectionné dans le localStorage
-const ajoutProduitLocalStorage = () => {
-    //ajout dans le tableau de l'objet avec les values choisies par l'user
-    saveProduit.push(choixProduitUser);
-    //conversion en format JSON et envoi dans la key "produit" du localStorage
-    localStorage.setItem("produit", JSON.stringify(saveProduit));
-};
-//s'il y a déjà des produits enregistrés dans le localStorage
-if (saveProduit){
-    ajoutProduitLocalStorage();   
-    //saveProduit.push(choixProduitUser);
-    //JSON.stringify = convertir les objets JS en chaînes de caractère
-    //localStorage.setItem("produit", JSON.stringify(saveProduit));
-    console.log(saveProduit);
-} //s'il n'y a pas de produit enregistré dans localStorage
-else {
-    saveProduit = [];
-    ajoutProduitLocalStorage();
-    //saveProduit.push(choixProduitUser);
-    //localStorage.setItem("produit", JSON.stringify(saveProduit));
-    console.log(saveProduit);
-}
-
-});
-*/
