@@ -15,12 +15,12 @@ if (savePanier === null) {
         //console.log(savePanier[i]);
         document.querySelector("#cart__items").innerHTML += `<article class="cart__item" data-id="${savePanier[i].idProduit}" data-color="${savePanier[i].colorProduit}">
         <div class="cart__item__img">
-          <img src="${savePanier[i].imageUrl}" alt="${savePanier[i].altTxt}">
+        <img src="../images/product01.jpg" alt="Photographie d'un canapé">
         </div>
         <div class="cart__item__content">
           <div class="cart__item__content__description">
             <h2>Nom du produit</h2>
-            <p>Vert</p>
+            <p>${savePanier[i].colorProduit}</p>
             <p>42,00 €</p>
           </div>
           <div class="cart__item__content__settings">
@@ -41,94 +41,8 @@ if (savePanier === null) {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//Pour chaque produit présent dans le localStorage afficher les éléménets suivants 
-/*if (savePanier === null){
-    console.log("je suis vide")
-}else{
-    let pagePanier = [];*/
-    /*fetch("http://localhost:3000/api/products/")
-    .then((res) => res.json())
-      .then((data) => {
-        let pagePanier =data.product;
-    for(i=0; i < savePanier.length; i++){
-        document.querySelector("#cart__item").innerHTML += `<article class="cart__item" data-id="${product-ID}" data-color="${product-color}">
-        <div class="cart__item__img">
-          <img src="${data.imageUrl}" alt="${data.altTxt}">
-        </div>
-        <div class="cart__item__content">
-          <div class="cart__item__content__description">
-            <h2>Nom du produit</h2>
-            <p>Vert</p>
-            <p>42,00 €</p>
-          </div>
-          <div class="cart__item__content__settings">
-            <div class="cart__item__content__settings__quantity">
-              <p>Qté : </p>
-              <input type="number" class="itemQuantity" name="itemQuantity" min="1" max="100" value="42">
-            </div>
-            <div class="cart__item__content__settings__delete">
-              <p class="deleteItem">Supprimer</p>
-            </div>
-          </div>
-        </div>
-        </article>`;
-    } 
-});*/
-//}
-
-/*//Affichage  des produits du panier
-//Sélection de la classe où on va injecter le code html
-const cart = document.querySelector("#cart__items").innerHTML += `<article class="cart__item" data-id="{product-ID}" data-color="{product-color}">
-<div class="cart__item__img">
-  <img src="../images/product01.jpg" alt="Photographie d'un canapé">
-</div>
-<div class="cart__item__content">
-  <div class="cart__item__content__description">
-    <h2>Nom du produit</h2>
-    <p>Vert</p>
-    <p>42,00 €</p>
-  </div>
-  <div class="cart__item__content__settings">
-    <div class="cart__item__content__settings__quantity">
-      <p>Qté : </p>
-      <input type="number" class="itemQuantity" name="itemQuantity" min="1" max="100" value="42">
-    </div>
-    <div class="cart__item__content__settings__delete">
-      <p class="deleteItem">Supprimer</p>
-    </div>
-  </div>
-</div>
-</article>`;*/
-
-
-
-
 /*
-//Test qui marche pas et je ne ssais pas pourquoi!!!
+//Test qui marche pas et je ne ssais pas pourquoi!!! Ajouter au panier et enregistrer
 function addPanier(produit){
     let panier = getPanier();
     let foundProduit = panier.find(p => p.id == produit.id)//est-ce que le produit est déjà dans le panier?
@@ -174,11 +88,19 @@ function addBasket(product){
 }
 
 //Retirer un produit du panier
-function removeFromBasket(product){
+function removeItem(product){
+    let panier = getPanier();
+    panier = panier.filter(p => p.id != product.id); // filtrer le produit pour le supprimer
+    savePanier(panier);
+}
+
+//Retirer un produit du panier
+function removeFromPanier(produit){
     let basket = getBasket();
     basket = basket.filter(p => p.id != product.id); // filtrer le produit pour le supprimer
     saveBasket(basket);
 }
+
 
 //Changer la quantité
 function changeQuantity(product,quantity){
@@ -213,60 +135,5 @@ function getTotalPrice(){
     }
     return total;
 }
-
-*/
-
-/*
-// J'execute une premiere fois
-let optionsProduct =
-    {
-        productId : 1,
-        quantity : 2,
-        color : 3
-    }
-    let productInLocalStorage = JSON.parse(localStorage.getItem("product"))
-    // s'il y a un produit dans le local storage  //
-    // if there's product(s) in local Storage, pusht in json format //
-    if(productInLocalStorage){
-        productInLocalStorage.push(optionsProduct)
-        localStorage.setItem("product", JSON.stringify(productInLocalStorage))
-    }
-    // s'il n'y a pas un produit dans le local storage  //
-    // if there's not product in local Storage, create an array and push it //
-    else{
-        productInLocalStorage = []
-        productInLocalStorage.push(optionsProduct)
-        console.log(productInLocalStorage)
-        localStorage.setItem("product", JSON.stringify(productInLocalStorage))
-    }
- 
-// Puis une seconde fois ceci
-let optionsProduct =
-    {
-        productId : 2,
-        quantity : 4,
-        color : 3
-    }
-    let productInLocalStorage = JSON.parse(localStorage.getItem("product"))
-    // s'il y a un produit dans le local storage  //
-    // if there's product(s) in local Storage, pusht in json format //
-    if(productInLocalStorage){
-        productInLocalStorage.push(optionsProduct)
-        localStorage.setItem("product", JSON.stringify(productInLocalStorage))
-    }
-    // s'il n'y a pas un produit dans le local storage  //
-    // if there's not product in local Storage, create an array and push it //
-    else{
-        productInLocalStorage = []
-        productInLocalStorage.push(optionsProduct)
-        console.log(productInLocalStorage)
-        localStorage.setItem("product", JSON.stringify(productInLocalStorage))
-    }
- 
- 
-// Je fais dans ma console
-localStorage.getItem("product")
-//Resultat:
-'[{"productId":1,"quantity":2,"color":3},{"productId":2,"quantity":4,"color":3}]'
 
 */

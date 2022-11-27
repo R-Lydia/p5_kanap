@@ -64,4 +64,5 @@ else {
     ajoutProduitLocalStorage();
     console.log(savePanier);
 }
-}); 
+
+}); //fin addEventListener
