@@ -24,7 +24,7 @@ fetch(`http://localhost:3000/api/products/${id}`)
         document.querySelector("#colors").innerHTML += `<option value="${optionColors[i]}">${optionColors[i]}</option>`;
     }
   });
-
+  
   /*----------------- GESTION DU PANIER------------------*/
 //Sélectionner le bouton "Ajouter au panier" 
 const boutonPanier = document.querySelector("#addToCart")
@@ -52,7 +52,7 @@ let savePanier = JSON.parse(localStorage.getItem("panier"));
 //Refactorisation de la fonction ajouter un produit sélectionné dans le localStorage
 const ajoutProduitLocalStorage = () => {
     savePanier.push(choixProduitUser);  //ajout dans le tableau de l'objet avec les values choisies par l'user
-    localStorage.setItem("panier", JSON.stringify(savePanier));  //conversion en format JSON et envoi dans la key "produit" du localStorage
+    localStorage.setItem("panier", JSON.stringify(savePanier));  //conversion en format JSON et envoi dans la key "panier" du localStorage
 };
 //s'il y a déjà des produits enregistrés dans le localStorage
 if (savePanier){

@@ -7,7 +7,7 @@ console.log(savePanier);
 //Affichage des produits du panier
 let pagePanier = [];
 
-if (savePanier === null) {
+if (savePanier === null || savePanier == 0) {
     console.log("Panier vide");
 } else {
     console.log("je ne suis pas vide") 
@@ -38,8 +38,58 @@ if (savePanier === null) {
     }
 };
 
+/*//Test qui marche pas et je ne ssais pas pourquoi!!! Ajouter au panier et enregistrer
+function addPanier(produit){
+    let panier = getPanier();
+    let foundProduit = panier.find(p => p.id == produit.id)//est-ce que le produit est déjà dans le panier?
+    
+    if(foundProduit != undefined){ //s'il est différent de undefined, ça veut dire qu'il existe déjà
+        foundProduit.quantity++; //j'ajoute 1 à la quantité
+        
+    }else{
+        quantity.value = 1; // définit la quantité à 1 par défaut
+        panier.push(produit); //.push = ajouter le produit
+        
+    }
+    savePanier(panier);
+}*/
 
 
+//Supprimer un élément/produit du panier - test3 - 
+const deleteItem = document.querySelectorAll(".deleteItem");
+console.log(deleteItem);
+
+for (let i = 0; i< deleteItem.length; i++){
+    deleteItem[i].addEventListener("click", (e) =>{
+        e.preventDefault();
+
+        let deleteItemSelect = savePanier[i].idProduit; //sélection du produit(par son id) à supprimer au clic
+        console.log(deleteItemSelect);
+
+        savePanier = savePanier.filter (p => p.idProduit != deleteItemSelect); //on garde tous les éléments sauf celui qui a été cliqué
+        console.log(savePanier);
+
+        localStorage.setItem("panier", JSON.stringify(savePanier)); //on envoie la key "panier" dans le localStorage pour enlever le produit
+        window.location.href = "cart.html"; // on réactualise l'affichage en rafraichissant la page du panier
+    });
+};
+
+/*//Retirer un produit du panier -test1
+function removeFromPanier(product){
+    let panier = getPanier();
+    panier = panier.filter(p => p.id != product.id); // filtrer le produit pour le supprimer
+    savePanier(panier);
+}
+*/
+
+/*//Supprimer un élément du panier - test2
+const deletItem = document.querySelectorAll(".deleteItem");
+console.log(deletItem);
+deletItem.forEach((btn,i) => {
+    btn.addEventListener('click', e => {
+        deletItemSelect(i);
+    });
+});*/
 
 /*
 //Test qui marche pas et je ne ssais pas pourquoi!!! Ajouter au panier et enregistrer
@@ -87,15 +137,10 @@ function addBasket(product){
     saveBasket(basket);
 }
 
-//Retirer un produit du panier
-function removeItem(product){
-    let panier = getPanier();
-    panier = panier.filter(p => p.id != product.id); // filtrer le produit pour le supprimer
-    savePanier(panier);
-}
 
-//Retirer un produit du panier
-function removeFromPanier(produit){
+
+//Retirer un produit du panier ---idée de base
+function removeFromBasket(produit){
     let basket = getBasket();
     basket = basket.filter(p => p.id != product.id); // filtrer le produit pour le supprimer
     saveBasket(basket);
