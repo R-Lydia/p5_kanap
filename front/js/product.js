@@ -66,29 +66,30 @@ else {
 }*/
 
 let panier = localStorage.getItem("panier")
-    if (panier == null) { //si panier n'existe pas
-        let panier =[choixProduitUser] // je cré
-        localStorage.setItem ("panier", JSON.stringify(panier))
 
+    if (panier == null) { //si panier n'existe pas
+        let panier = [choixProduitUser] // je cré
+        localStorage.setItem("panier", JSON.stringify(panier))
+        console.log(panier);
     }
     else {
-        console.log(panier);
         let itemTrouve = false;
 
         let panierJson = JSON.parse(panier)
-        panierJson.forEach(item => { // fonction fléchée (n'a pas de nom, n'existe que dans la boucle forEach) avec paramètre item(=un élément), panierJson= objet
-            if (item.id == choixProduitUser.idProduit && item.color == choixProduitUser.colorProduit){
-                item.quantity += choixProduitUser.quantityProduit // a+=b ça revient à faire a = a+b
+        panierJson.forEach(item => {     // fonction fléchée (n'a pas de nom, n'existe que dans la boucle forEach) avec paramètre item(=un élément), panierJson= objet
+            if (item.idProduit == choixProduitUser.idProduit && item.colorProduit == choixProduitUser.colorProduit){     // a+=b ça revient à faire a = a+b
+                item.quantityProduit += choixProduitUser.quantityProduit;
                 itemTrouve = true;
             } 
         }) 
 
-if (itemTrouve = false){
-    panierJson.append(choixProduitUser)
-}
+        if (itemTrouve == false){
+            panierJson.push(choixProduitUser)
+        }
+        console.log(itemTrouve)
 
-panier = JSON.stringify(panierJson)
-localStorage.setItem("panier", panier)
-}
+        panier = JSON.stringify(panierJson)
+        localStorage.setItem("panier", panier)
+        }
 
 }); //fin addEventListener
