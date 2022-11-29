@@ -24,7 +24,7 @@ fetch(`http://localhost:3000/api/products/${id}`)
         document.querySelector("#colors").innerHTML += `<option value="${optionColors[i]}">${optionColors[i]}</option>`;
     }
   });
-  
+
   /*----------------- GESTION DU PANIER------------------*/
 //Sélectionner le bouton "Ajouter au panier" 
 const boutonPanier = document.querySelector("#addToCart")
@@ -43,7 +43,7 @@ let choixProduitUser = {
 console.log(choixProduitUser);
 
 
-/*----------------localStorage------------------*/
+/*----------------localStorage------------------
 //Déclaration de la variable "savePanier" pour récupérer les données du LocalStorage dans laquelle on met la key "panier" et les values ("choixProduitUser")qui sont dans le localStorage
 //JSON.parse = Convertir les données du localStorage de JSON en Objet JS
 let savePanier = JSON.parse(localStorage.getItem("panier"));
@@ -63,6 +63,32 @@ else {
     savePanier = [];
     ajoutProduitLocalStorage();
     console.log(savePanier);
+}*/
+
+let panier = localStorage.getItem("panier")
+    if (panier == null) { //si panier n'existe pas
+        let panier =[choixProduitUser] // je cré
+        localStorage.setItem ("panier", JSON.stringify(panier))
+
+    }
+    else {
+        console.log(panier);
+        let itemTrouve = false;
+
+        let panierJson = JSON.parse(panier)
+        panierJson.forEach(item => { // fonction fléchée (n'a pas de nom, n'existe que dans la boucle forEach) avec paramètre item(=un élément), panierJson= objet
+            if (item.id == choixProduitUser.idProduit && item.color == choixProduitUser.colorProduit){
+                item.quantity += choixProduitUser.quantityProduit // a+=b ça revient à faire a = a+b
+                itemTrouve = true;
+            } 
+        }) 
+
+if (itemTrouve = false){
+    panierJson.append(choixProduitUser)
+}
+
+panier = JSON.stringify(panierJson)
+localStorage.setItem("panier", panier)
 }
 
 }); //fin addEventListener
