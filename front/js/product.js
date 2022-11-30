@@ -43,7 +43,7 @@ let choixProduitUser = {
 console.log(choixProduitUser);
 
 
-/*----------------localStorage------------------
+/*----------------localStorage------------------BEFORE
 //Déclaration de la variable "savePanier" pour récupérer les données du LocalStorage dans laquelle on met la key "panier" et les values ("choixProduitUser")qui sont dans le localStorage
 //JSON.parse = Convertir les données du localStorage de JSON en Objet JS
 let savePanier = JSON.parse(localStorage.getItem("panier"));
@@ -65,31 +65,42 @@ else {
     console.log(savePanier);
 }*/
 
+
+/*---------------------GESTION DU LOCALSTORAGE (à l'intérieur du addEventListener)----------------------*/
+
+//Déclaration de la variable "panier" pour récupérer les données du LocalStorage
 let panier = localStorage.getItem("panier")
 
-    if (panier == null) { //si panier n'existe pas
-        let panier = [choixProduitUser] // je cré
-        localStorage.setItem("panier", JSON.stringify(panier))
+    if (panier == null) { //SI le panier n'existe pas
+        let panier = [choixProduitUser] //je créé un panier (tableau) contenant le choix de mon user
+        localStorage.setItem("panier", JSON.stringify(panier)) //j'enregistre le panier dans localStorage en convertissant les objets JS en chaînes de caractère (JSON)
         console.log(panier);
     }
-    else {
-        let itemTrouve = false;
+    else { //SINON
+        let itemTrouve = false; // déclaration de la variable itemTrouve avec paramètre false par défaut
 
-        let panierJson = JSON.parse(panier)
-        panierJson.forEach(item => {     // fonction fléchée (n'a pas de nom, n'existe que dans la boucle forEach) avec paramètre item(=un élément), panierJson= objet
-            if (item.idProduit == choixProduitUser.idProduit && item.colorProduit == choixProduitUser.colorProduit){     // a+=b ça revient à faire a = a+b
-                item.quantityProduit += choixProduitUser.quantityProduit;
-                itemTrouve = true;
+        let panierJson = JSON.parse(panier) //on convertit le panier de JSON à objet JS
+        console.log(panierJson)
+
+        panierJson.forEach(item => {     // et je vérifie que pour chaque produit
+            if (item.idProduit == choixProduitUser.idProduit && item.colorProduit == choixProduitUser.colorProduit){  // si le produit a le même id ET la même couleur
+                item.quantityProduit = Number(item.quantityProduit) //"passage de string à number pour item.quantityProduit"
+                item.quantityProduit += Number(choixProduitUser.quantityProduit); // addition et passage de string à number 
+                itemTrouve = true; // si ce qui est au-dessus est vérifié mon itemTrouve est true
+
+                console.log(choixProduitUser.quantityProduit)
+                console.log (item.quantityProduit)
             } 
         }) 
 
-        if (itemTrouve == false){
-            panierJson.push(choixProduitUser)
+        if (itemTrouve == false){ //si on n'a pas trouvé de produit identique 
+            panierJson.push(choixProduitUser) //on ajoute au panier
         }
+
         console.log(itemTrouve)
 
-        panier = JSON.stringify(panierJson)
-        localStorage.setItem("panier", panier)
-        }
+        panier = JSON.stringify(panierJson)// on convertit les objets JS en chaînes de caractère (JSON)
+        localStorage.setItem("panier", panier) //j'enregistre le panier dans localStorage
+        } //fin du else
 
 }); //fin addEventListener
