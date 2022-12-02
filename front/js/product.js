@@ -25,7 +25,9 @@ fetch(`http://localhost:3000/api/products/${id}`)
     }
   });
 
+
   /*----------------- GESTION DU PANIER------------------*/
+
 //Sélectionner le bouton "Ajouter au panier" 
 const boutonPanier = document.querySelector("#addToCart")
 //console.log(boutonPanier);
@@ -42,31 +44,7 @@ let choixProduitUser = {
 };
 console.log(choixProduitUser);
 
-
-/*----------------localStorage------------------BEFORE
-//Déclaration de la variable "savePanier" pour récupérer les données du LocalStorage dans laquelle on met la key "panier" et les values ("choixProduitUser")qui sont dans le localStorage
-//JSON.parse = Convertir les données du localStorage de JSON en Objet JS
-let savePanier = JSON.parse(localStorage.getItem("panier"));
-    console.log(savePanier);
-
-//Refactorisation de la fonction ajouter un produit sélectionné dans le localStorage
-const ajoutProduitLocalStorage = () => {
-    savePanier.push(choixProduitUser);  //ajout dans le tableau de l'objet avec les values choisies par l'user
-    localStorage.setItem("panier", JSON.stringify(savePanier));  //conversion en format JSON et envoi dans la key "panier" du localStorage
-};
-//s'il y a déjà des produits enregistrés dans le localStorage
-if (savePanier){
-    ajoutProduitLocalStorage();  //appel de la fonction ajouter un produit sélectionné dans le localStorage 
-    console.log(savePanier);
-} //s'il n'y a pas de produit enregistré dans localStorage
-else {
-    savePanier = [];
-    ajoutProduitLocalStorage();
-    console.log(savePanier);
-}*/
-
-
-/*---------------------GESTION DU LOCALSTORAGE (à l'intérieur du addEventListener)----------------------*/
+/*----------Gestion du LOCALSTORAGE (à l'intérieur du addEventListener)----------*/
 
 //Déclaration de la variable "panier" pour récupérer les données du LocalStorage
 let panier = localStorage.getItem("panier")

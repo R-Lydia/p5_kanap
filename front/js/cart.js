@@ -5,56 +5,61 @@ console.log(savePanier);
 
 
 /*---------------------AFFICHER LES PRODUITS DU PANIER (Etape 8)----------------------*/ 
-//let pagePanier = [];
-//console.log(pagePanier);
-
 if (savePanier === null || savePanier == 0) {
     console.log("Panier vide");
-} else {
-    console.log("Je ne suis pas vide") 
+} 
+else {
+    console.log("Je ne suis pas vide")
+
     for(let i = 0; i <savePanier.length; i++){
-        //console.log(savePanier[i]);
-        document.querySelector("#cart__items").innerHTML += `<article class="cart__item" data-id="${savePanier[i].idProduit}" data-color="${savePanier[i].colorProduit}">
-        <div class="cart__item__img">
-        <img src="../images/product01.jpg" alt="Photographie d'un canapé">
-        </div>
-        <div class="cart__item__content">
-          <div class="cart__item__content__description">
-            <h2>Nom du produit</h2>
-            <p>${savePanier[i].colorProduit}</p>
-            <p>42,00 €</p>
-          </div>
-          <div class="cart__item__content__settings">
-            <div class="cart__item__content__settings__quantity">
-              <p>Qté : </p>
-              <input type="number" class="itemQuantity" name="itemQuantity" min="1" max="100" value="${savePanier[i].quantityProduit}">
-            </div>
-            <div class="cart__item__content__settings__delete">
-              <p class="deleteItem">Supprimer</p>
-            </div>
-          </div>
-        </div>
-        </article>`;
-        
-    }
-};
+
+        fetch(`http://localhost:3000/api/products/${savePanier[i].idProduit}`)
+            .then((res) => res.json()) //pour récupérer la réponse au format json
+            .then((data) => {
+            console.log(data);
+            
+                document.querySelector("#cart__items").innerHTML += `<article class="cart__item" data-id="${savePanier[i].idProduit}" data-color="${savePanier[i].colorProduit}">
+                <div class="cart__item__img">
+                <img src="${data.imageUrl}"  alt="${data.altTxt}">
+                </div>
+                <div class="cart__item__content">
+                <div class="cart__item__content__description">
+                    <h2>${data.name}</h2>
+                    <p>${savePanier[i].colorProduit}</p>
+                    <p>${data.price} €</p>
+                </div>
+                <div class="cart__item__content__settings">
+                    <div class="cart__item__content__settings__quantity">
+                    <p>Qté : </p>
+                    <input type="number" class="itemQuantity" name="itemQuantity" min="1" max="100" value="${savePanier[i].quantityProduit}">
+                    </div>
+                    <div class="cart__item__content__settings__delete">
+                    <p class="deleteItem">Supprimer</p>
+                    </div>
+                </div>
+                </div>
+                </article>`;
+        }) //fin .then   
+    } //fin for let i
+} //fin du else
 
 
 /*---------------------CHANGER LA QUANTITE - input page panier (Etape 9)----------------------*/
-
+/*
 //Changer la quantité d'un produit sur la page panier -test3- 
-const changeQuantity = document.querySelector(".itemQuantity"); //sélection des inputs qui gèrent la quantité
+const changeQuantity = document.getElementsByClassName(".itemQuantity"); //sélection des inputs qui gèrent la quantité
 console.log(changeQuantity);
 
 changeQuantity.addEventListener("change", (event) => { 
     //event.preventDefault();
     //const changeQuantitySelect = document.querySelector(".itemQuantity");
     //changeQuantitySelect.textContent = `${event.target.value}`
-    console.log("change");
+    //console.log("change");
     console.log(event.target.value);
 });
 
 //}
+*/
 
 /*//Changer la quantité d'un produit sur la page panier -test2-
 const changeQuantity = document.querySelectorAll(".itemQuantity"); //sélection des inputs qui gèrent la quantité
@@ -96,66 +101,17 @@ function changeQuantity(product,quantity){
 }*/
 
 
-/*---------------------AJOUTER AU PANIER LE MEME PRODUIT ET ENREGISTRER (Etape 7)----------------------*/
-/*
-//Test qui marche pas et je ne ssais pas pourquoi!!! 
-//Ajouter au panier et enregistrer - test2
-//function addPanier(choixProduitUser){
-    let panier = localStorage.getItem("panier")
-    console.log(panier);
-
-    let panierJson = JSON.parse(panier)
-    panierJson.forEach(item => { // fonction fléchée (n'a pas de nom, n'existe que dans la boucle forEach) avec paramètre item(=un élément), panierJson= objet
-        if (item.id == choixProduitUser)
-
-    }) 
-
-
-
-
-
-
-
-
-
-    let foundProduitSelect = savePanier.idProduit;
-    console.log(foundProduitSelect);
-
-    let foundProduit = savePanier.find(p => p.idProduit == foundProduitSelect)//est-ce que le produit est déjà dans le panier?
-    console.log(foundProduit);
-
-    if(foundProduit != undefined){ //s'il est différent de undefined, ça veut dire qu'il existe déjà
-        foundProduit.quantity++; //j'ajoute 1 à la quantité
-        
-    }else{
-        quantity.value = 1; // définit la quantité à 1 par défaut
-        savePanier.push(choixProduitUser); //.push = ajouter le produit
-        
-    }
-    savePanier(panier);
-//}*/
-
-/*
-//Test qui marche pas et je ne ssais pas pourquoi!!! Ajouter au panier et enregistrer - test1 -
-function addPanier(produit){
-    let panier = getPanier();
-    let foundProduit = panier.find(p => p.id == produit.id)//est-ce que le produit est déjà dans le panier?
-    
-    if(foundProduit != undefined){ //s'il est différent de undefined, ça veut dire qu'il existe déjà
-        foundProduit.quantity++; //j'ajoute 1 à la quantité
-        
-    }else{
-        quantity.value = 1; // définit la quantité à 1 par défaut
-        panier.push(produit); //.push = ajouter le produit
-        
-    }
-    savePanier(panier);
-}*/
 
 
 /*---------------------SUPPRIMER UN PRODUIT (Etape 9)----------------------*/
+//document.querySelectorAll('.deleItem').forEach(element => {
+//   element<ta logique ici>
+//});
+
+
+
 //Supprimer un élément/produit du panier - test3 - Fonctionne
-const deleteItem = document.querySelectorAll(".deleteItem");
+/*const deleteItem = document.querySelectorAll(".deleteItem");
 console.log(deleteItem);
 
 for (let i = 0; i< deleteItem.length; i++){
@@ -171,7 +127,7 @@ for (let i = 0; i< deleteItem.length; i++){
         localStorage.setItem("panier", JSON.stringify(savePanier)); //on envoie la key "panier" dans le localStorage pour enlever le produit
         window.location.href = "cart.html"; // on réactualise l'affichage en rafraichissant la page du panier
     });
-};
+};*/
 
 /*//Retirer un produit du panier - test1
 function removeFromPanier(product){
