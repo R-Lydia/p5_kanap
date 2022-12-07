@@ -54,7 +54,7 @@ let panier = localStorage.getItem("panier")
         localStorage.setItem("panier", JSON.stringify(panier)) //j'enregistre le panier dans localStorage en convertissant les objets JS en chaînes de caractère (JSON)
         console.log(panier);
     }
-    else { //SINON
+    else { //SINON le panier existe
         let itemTrouve = false; // déclaration de la variable itemTrouve avec paramètre false par défaut
 
         let panierJson = JSON.parse(panier) //on convertit le panier de JSON à objet JS
