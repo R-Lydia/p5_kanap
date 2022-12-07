@@ -9,14 +9,14 @@ if (savePanier === null || savePanier == 0) { //si le panier est vide ou égal 0
     console.log("Panier vide");
 } 
 else { //s'il y a des produits dans le panier
-    console.log("Je ne suis pas vide")  
+    console.log("Je ne suis pas vide");  
 
     for(let i = 0; i <savePanier.length; i++){ //on fait une boucle pour récupérer les produits du panier
 
         fetch(`http://localhost:3000/api/products/${savePanier[i].idProduit}`) //et on requête l'API avec l'Id du produit du panier pour afficher ses différentes données
             .then((res) => res.json()) 
             .then((data) => {
-            console.log(data);
+//            console.log(data);
             
                 document.querySelector("#cart__items").innerHTML += `<article class="cart__item" data-id="${savePanier[i].idProduit}" data-color="${savePanier[i].colorProduit}">
                 <div class="cart__item__img">
@@ -46,28 +46,48 @@ else { //s'il y a des produits dans le panier
        
 
 /*---------------------CHANGER LA QUANTITE - input page panier (Etape 9)----------------------*/
-/*// TEST 5 ____marche pas :(
+/*Dans chaque article "cart__item",
+quand je clique sur "l'input de la quantité",
+si l'article a le même id et la même couleur,
+je change la quantité et l'enregistre dans mon panier */
+
 
 //Pour chaque cart-item, je regarde le data-id et data-color pour savoir si c'est le même
 //si c'est le même et qu'on clique pour changer la quantité
 //on enregistre la nouvelle quantité
 
+
 let cartItem = document.getElementsByClassName("cart__item"); //sélection de cart item 
-console.log (cartItem)
+console.log (cartItem);
+
 
 for (let item of cartItem){
-    if (item.id == data-id && item.color == data-color){ // si le produit a le même id ET la même couleur
-        //let input = document.querySelector(".itemQuantity");
-        item.input.addEventListener("input", (event) => {  //ne marche  ni avec "change" ni avec "input"
-        console.log("change");
+    
+    if (item.id == data.id && item.color == data.color){ // si le produit a le même id ET la même couleur
+       // let itemQuantity = document.getElementsByClassName("itemQuantity");
+        itemQuantity.addEventListener("input", (event) => {  //ne marche  ni avec "change" ni avec "input"
+        //console.log("change");
         console.log(event.target.value);
-        })
+       })
     }else{
     console.log("Une erreur est survenue")
-   }
+  }
 } //fin for let
-*/
 
+
+
+/*
+let cartItem = document.getElementsByClassName("cart__item"); //sélection de cart item 
+console.log (cartItem);
+console.log("crash test");
+
+let itemQuantity = document.getElementsByClassName("itemQuantity");
+console.log(itemQuantity);
+
+input.addEventListener("change", (event) => {
+console.log(event.target.value);
+})
+*/
 
 /* //TEST 7 :(
 let quantity = document.getElementsByClassName("itemQuantity")
@@ -110,13 +130,34 @@ for (let i = 0; i< changeQuantity.length; i++){ //
 
 /*---------------------SUPPRIMER UN PRODUIT (Etape 9)----------------------*/
 
+/*Dans chaque article "cart__item", 
+quand je clique sur "supprimer", 
+si l'article a le même id et la même couleur, 
+je supprime l'article du DOM et du localStorage*/
 
-//document.querySelectorAll('.deleItem').forEach(element => {
-//   element<ta logique ici>
-//});
+/*let cartItem = document.getElementsByClassName("cart__item"); //sélection de cart item 
+console.log (cartItem);
+
+for (let item of cartItem){
+    
+    if (item.id == data.id && item.color == data.color){ // si le produit a le même id ET la même couleur
+
+        let deleteItem = document.querySelector(".deleteItem");
+        deleteItem.addEventListener("click", (e) => {  // au clic, j'écoute pour supprimer
+        e.preventDefault();
+        console.log (deleteItem) 
+
+        localStorage.setItem("panier", JSON.stringify(savePanier)); //on envoie la key "panier" dans le localStorage pour enlever le produit
+        window.location.href = "cart.html"; // on réactualise l'affichage en rafraichissant la page du panier
+       })
+    }
+}
+*/
+
+
+
+
 /*
-
-
 //Supprimer un élément/produit du panier - test3 - Ne Fonctionne pas vraiment...Essayer autre chose
 const deleteItem = document.querySelectorAll(".deleteItem"); // fonctionne trop aléatoirement!!!
 console.log(deleteItem);
@@ -134,8 +175,8 @@ for (let i = 0; i< deleteItem.length; i++){
         localStorage.setItem("panier", JSON.stringify(savePanier)); //on envoie la key "panier" dans le localStorage pour enlever le produit
         window.location.href = "cart.html"; // on réactualise l'affichage en rafraichissant la page du panier
     });
-};
-*/
+};*/
+
            /* }) //fin .then 
     } //fin for let i
 } //fin du else*/
