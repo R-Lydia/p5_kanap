@@ -11,13 +11,13 @@ if (savePanier === null || savePanier == 0) { //si le panier est vide ou égal 0
 else { //s'il y a des produits dans le panier
     console.log("Je ne suis pas vide");  
 
-    for(let i = 0; i <savePanier.length; i++){ //on fait une boucle pour récupérer les produits du panier
+    for(let i = 0; i <savePanier.length; i++) { //on fait une boucle pour récupérer les produits du panier
 
         fetch(`http://localhost:3000/api/products/${savePanier[i].idProduit}`) //et on requête l'API avec l'Id du produit du panier pour afficher ses différentes données
             .then((res) => res.json()) 
             .then((data) => {
-//            console.log(data);
-            
+           // console.log(data);
+                
                 document.querySelector("#cart__items").innerHTML += `<article class="cart__item" data-id="${savePanier[i].idProduit}" data-color="${savePanier[i].colorProduit}">
                 <div class="cart__item__img">
                 <img src="${data.imageUrl}"  alt="${data.altTxt}">
@@ -39,9 +39,34 @@ else { //s'il y a des produits dans le panier
                 </div>
                 </div>
                 </article>`;
-          
+            
+                
+                let cartItem = document.getElementsByClassName("cart__item"); //sélection de cart item 
+                //console.log("cartItem");
+                //console.log(cartItem.length);
+            
+                for (let item of cartItem){
+                    //console.log("inside");
+                    //if (item.id == data.id && item.color == data.color){ // si le produit a le même id ET la même couleur
+                    let itemQuantities = item.getElementsByClassName("itemQuantity");
+                    console.log(itemQuantities);
+                    //for(let iqty = 0; iqty < itemQuantities.length; iqty++) {
+                    itemQuantities.addEventListener("change", (event) => {  
+                    console.log("change");
+                    console.log(event.target.value);
+                    })
+                       // }
+                        
+                    // }else{
+                    //console.log("Une erreur est survenue")
+                  // }
+                } //fin for let
+              
+
             }) //fin .then 
+
     } //fin for let i
+
 } //fin du else
        
 
@@ -57,23 +82,22 @@ je change la quantité et l'enregistre dans mon panier */
 //on enregistre la nouvelle quantité
 
 
-let cartItem = document.getElementsByClassName("cart__item"); //sélection de cart item 
-console.log (cartItem);
+/*let cartItem = document.getElementsByClassName("cart__item"); //sélection de cart item 
 
 
 for (let item of cartItem){
-    
+    console.log("inside");
     if (item.id == data.id && item.color == data.color){ // si le produit a le même id ET la même couleur
        // let itemQuantity = document.getElementsByClassName("itemQuantity");
         itemQuantity.addEventListener("input", (event) => {  //ne marche  ni avec "change" ni avec "input"
         //console.log("change");
-        console.log(event.target.value);
+       // console.log(event.target.value);
        })
     }else{
     console.log("Une erreur est survenue")
   }
 } //fin for let
-
+*/
 
 
 /*
@@ -183,6 +207,14 @@ for (let i = 0; i< deleteItem.length; i++){
 
 
 
+
+
+
+
+
+
+
+
 /*---------------------CALCULER LA QUANTITE TOTALE ET LE PRIX TOTAL (Etape 9)----------------------*/
 
 /*-------totalQuantity-------*/
@@ -194,6 +226,118 @@ for (let i = 0; i< deleteItem.length; i++){
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
  /*---------------------PASSER LA COMMANDE (Etape 10)----------------------*/
  
- 
+ let form = document.querySelector(".cart__order__form");
+
+ //console.log(form.firstName);
+
+//  Ecouter la modification de l'input FIRSTNAME
+form.firstName.addEventListener("change", function() {
+    validFirstName(this);
+});
+
+const validFirstName = function (inputFirstName){
+    //création de la regex pour  validation firstName
+    let firstNameRegExp = new RegExp (
+        "^[a-zA-Z-]{2,20}$","g"
+    );
+    let testFirstName = firstNameRegExp.test(inputFirstName.value); // retourne true ou false
+    let textMsg = inputFirstName.nextElementSibling;
+    //console.log(testFirstName);
+    if(testFirstName == true) {
+        textMsg.innerHTML = "Prénom valide";
+        /*textMsg.classList.remove("text-danger");
+        textMsg.classList.add("text-success");*/
+    }else{
+        textMsg.innerHTML = "Prénom non valide";
+       /* textMsg.classList.remove("text-success");
+        textMsg.classList.add("text-danger");*/
+    }
+};
+
+
+//  Ecouter la modification de l'input LASTNAME
+form.lastName.addEventListener("change", function() {
+    validLastName(this);
+});
+
+const validLastName = function (inputLastName){
+    //création de la regex pour  validation lastName
+    let lastNameRegExp = new RegExp (
+        "^[a-zA-Z-]{2,20}$","g"
+    );
+    let testLastName = lastNameRegExp.test(inputLastName.value); // retourne true ou false
+    let textMsg = inputLastName.nextElementSibling;
+    //console.log(testLastName);
+    if(testLastName == true) {
+        textMsg.innerHTML = "Nom valide";
+        /*textMsg.classList.remove("text-danger");
+        textMsg.classList.add("text-success");*/
+    }else{
+        textMsg.innerHTML = "Nom non valide";
+       /* textMsg.classList.remove("text-success");
+        textMsg.classList.add("text-danger");*/
+    }
+};
+
+
+//  Ecouter la modification de l'input ADDRESS
+form.address.addEventListener("change", function() {
+    validAddress(this);
+});
+
+const validAddress = function (inputAddress){
+    //création de la regex pour  validation address
+    let addressRegExp = new RegExp (
+        "^[a-zA-Z-]{2,20}$","g"
+    );
+    let testAddress = addressRegExp.test(inputAddress.value); // retourne true ou false
+    let textMsg = inputAddress.nextElementSibling;
+    //console.log(testAddress);
+    if(testAddress == true) {
+        textMsg.innerHTML = "Adresse valide";
+        /*textMsg.classList.remove("text-danger");
+        textMsg.classList.add("text-success");*/
+    }else{
+        textMsg.innerHTML = "Adresse non valide";
+       /* textMsg.classList.remove("text-success");
+        textMsg.classList.add("text-danger");*/
+    }
+};
+
+//  Ecouter la modification de l'input CITY
+form.city.addEventListener("change", function() {
+    validCity(this);
+});
+
+const validCity = function (inputCity){
+    //création de la regex pour  validation city
+    let cityRegExp = new RegExp (
+        "^[a-zA-Z-]{2,25}$","g"
+    );
+    let testCity = cityRegExp.test(inputCity.value); // retourne true ou false
+    let textMsg = inputCity.nextElementSibling;
+    //console.log(testCity);
+    if(testCity == true) {
+        textMsg.innerHTML = "Ville valide";
+        /*textMsg.classList.remove("text-danger");
+        textMsg.classList.add("text-success");*/
+    }else{
+        textMsg.innerHTML = "Ville non valide";
+       /* textMsg.classList.remove("text-success");
+        textMsg.classList.add("text-danger");*/
+    }
+};
