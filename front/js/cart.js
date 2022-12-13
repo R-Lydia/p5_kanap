@@ -5,6 +5,7 @@ let savePanier = JSON.parse(localStorage.getItem("panier"));
 
 
 /*---------------------AFFICHER LES PRODUITS DU PANIER (Etape 8)----------------------*/ 
+
 if (savePanier === null || savePanier == 0) { //si le panier est vide ou égal 0
     console.log("Panier vide");
 } 
@@ -17,21 +18,32 @@ else { //s'il y a des produits dans le panier
             .then((res) => res.json()) 
             .then((data) => {
            // console.log(data);
-                
-                document.querySelector("#cart__items").innerHTML += `<article class="cart__item" data-id="${savePanier[i].idProduit}" data-color="${savePanier[i].colorProduit}">
+            displayCartItem(data, savePanier[i]); 
+            addQuantityListener(savePanier[i].idProduit, savePanier[i].colorProduit);   
+        }) 
+    }    
+}           
+
+
+
+//function afficher cartItem
+
+function displayCartItem (data, savePanier) {
+    console.log(data);
+    document.querySelector("#cart__items").innerHTML += `<article class="cart__item" data-id="${savePanier.idProduit}" data-color="${savePanier.colorProduit}">
                 <div class="cart__item__img">
                 <img src="${data.imageUrl}"  alt="${data.altTxt}">
                 </div>
                 <div class="cart__item__content">
                 <div class="cart__item__content__description">
                     <h2>${data.name}</h2>
-                    <p>${savePanier[i].colorProduit}</p>
+                    <p>${savePanier.colorProduit}</p>
                     <p>${data.price} €</p>
                 </div>
                 <div class="cart__item__content__settings">
                     <div class="cart__item__content__settings__quantity">
                     <p>Qté : </p>
-                    <input type="number" class="itemQuantity" name="itemQuantity" min="1" max="100" value="${savePanier[i].quantityProduit}">
+                    <input type="number" class="itemQuantity" name="itemQuantity" min="1" max="100" value="${savePanier.quantityProduit}">
                     </div>
                     <div class="cart__item__content__settings__delete">
                     <p class="deleteItem">Supprimer</p>
@@ -39,38 +51,72 @@ else { //s'il y a des produits dans le panier
                 </div>
                 </div>
                 </article>`;
+}
+
+//function avec addEventListener pour modifier la quantité
+
+function addQuantityListener (idProduit, colorProduit) {
+    let cartItem = document.getElementsByClassName("cart__item"); //sélection de cart item 
+    console.log(idProduit);
+    console.log(colorProduit);
             
+    for (let item of cartItem){
+        console.log(item)
+        if (item.dataset.id == idProduit && item.dataset.color == colorProduit){ // si le produit a le même id ET la même couleur
+            let itemQuantities = item.getElementsByClassName("itemQuantity");
+            console.log(itemQuantities);
+
+            itemQuantities[0].addEventListener("change", (event) => {  
+                console.log("change");
+                console.log(event.target.value);
+            })
+                    //j'enregistre la modification de l'input quantity dans le localStorage
+
+                    //localStorage.setItem("panier", JSON.stringify(savePanier)); //on envoie la key "panier" dans le localStorage   
+
+        } 
+    }
+}
+
+//function avec addEventListener pour supprimer le canapé
+
+            
+/*---------------------CHANGER LA QUANTITE - input page panier (Etape 9)----------------------*/
+
                 
-                let cartItem = document.getElementsByClassName("cart__item"); //sélection de cart item 
-                //console.log("cartItem");
-                //console.log(cartItem.length);
-            
-                for (let item of cartItem){
-                    //console.log("inside");
-                    //if (item.id == data.id && item.color == data.color){ // si le produit a le même id ET la même couleur
-                    let itemQuantities = item.getElementsByClassName("itemQuantity");
-                    console.log(itemQuantities);
-                    //for(let iqty = 0; iqty < itemQuantities.length; iqty++) {
-                    itemQuantities.addEventListener("change", (event) => {  
-                    console.log("change");
-                    console.log(event.target.value);
-                    })
-                       // }
-                        
-                    // }else{
-                    //console.log("Une erreur est survenue")
-                  // }
-                } //fin for let
               
 
-            }) //fin .then 
 
-    } //fin for let i
 
-} //fin du else
-       
+/*---------------------SUPPRIMER UN PRODUIT (Etape 9)----------------------*/
+/*
+                //Supprimer un élément/produit du panier 
+                const deleteItem = document.querySelectorAll(".deleteItem"); 
+                console.log(deleteItem);
 
-/*---------------------CHANGER LA QUANTITE - input page panier (Etape 9)----------------------*/
+                for (let i = 0; i< deleteItem.length; i++){
+                    deleteItem[i].addEventListener("click", (e) =>{
+                    e.preventDefault();
+                    if (deleteItem[i].id == data.id && deleteItem[i].color == data.color){    
+                    let deleteItemSelect = savePanier[i].idProduit; //sélection du produit(par son id) à supprimer au clic
+                    console.log(deleteItemSelect);
+
+                    savePanier = savePanier.filter (p => p.idProduit != deleteItemSelect); //on garde tous les éléments sauf celui qui a été cliqué
+                    console.log(savePanier);
+
+                    localStorage.setItem("panier", JSON.stringify(savePanier)); //on envoie la key "panier" dans le localStorage pour enlever le produit
+                    window.location.href = "cart.html"; // on réactualise l'affichage en rafraichissant la page du panier
+                    });
+                }
+                };
+*/
+
+
+
+
+    
+
+
 /*Dans chaque article "cart__item",
 quand je clique sur "l'input de la quantité",
 si l'article a le même id et la même couleur,
@@ -82,73 +128,10 @@ je change la quantité et l'enregistre dans mon panier */
 //on enregistre la nouvelle quantité
 
 
-/*let cartItem = document.getElementsByClassName("cart__item"); //sélection de cart item 
 
 
-for (let item of cartItem){
-    console.log("inside");
-    if (item.id == data.id && item.color == data.color){ // si le produit a le même id ET la même couleur
-       // let itemQuantity = document.getElementsByClassName("itemQuantity");
-        itemQuantity.addEventListener("input", (event) => {  //ne marche  ni avec "change" ni avec "input"
-        //console.log("change");
-       // console.log(event.target.value);
-       })
-    }else{
-    console.log("Une erreur est survenue")
-  }
-} //fin for let
-*/
 
 
-/*
-let cartItem = document.getElementsByClassName("cart__item"); //sélection de cart item 
-console.log (cartItem);
-console.log("crash test");
-
-let itemQuantity = document.getElementsByClassName("itemQuantity");
-console.log(itemQuantity);
-
-input.addEventListener("change", (event) => {
-console.log(event.target.value);
-})
-*/
-
-/* //TEST 7 :(
-let quantity = document.getElementsByClassName("itemQuantity")
-
-for (let updateQuantity of quantity){
-    updateQuantity.addEventListener("change", (e) =>{
-    console.log ("change") 
-    console.log(e.target.value)
-    })
-}
-*/
-
-
-/*//TEST 3 :(
-let changeQuantity = document.querySelector(".itemQuantity"); //sélection des inputs qui gèrent la quantité => querySelectorAll déclenche changeQuantity.... is not a function
-console.log(changeQuantity); // ne fonctionne que sur le premier produit
-
-changeQuantity.addEventListener("change", (e) => { 
-    console.log("change");
-    console.log(e.target.value);
-});*/
-
-
-/* TEST 1 :(
-//Changer la quantité d'un produit sur la page panier
-const changeQuantity = document.querySelectorAll(".itemQuantity"); //sélection des inputs qui gèrent la quantité
-console.log(changeQuantity);
-
-for (let i = 0; i< changeQuantity.length; i++){ //
-    changeQuantity[i].addEventListener("change", (event) =>{
-        event.preventDefault();
-        let changeQuantitySelect = savePanier[i].quantityProduit; //sélection du produit(par son id) à supprimer au clic
-        console.log(changeQuantitySelect);
-    });
-
-};
-*/
 
 
 
@@ -177,9 +160,6 @@ for (let item of cartItem){
     }
 }
 */
-
-
-
 
 /*
 //Supprimer un élément/produit du panier - test3 - Ne Fonctionne pas vraiment...Essayer autre chose
@@ -218,7 +198,7 @@ for (let i = 0; i< deleteItem.length; i++){
 /*---------------------CALCULER LA QUANTITE TOTALE ET LE PRIX TOTAL (Etape 9)----------------------*/
 
 /*-------totalQuantity-------*/
-
+//let totalQuantity =
 
 
 /*-------totalPrice-------*/
@@ -239,11 +219,11 @@ for (let i = 0; i< deleteItem.length; i++){
 
 
  /*---------------------PASSER LA COMMANDE (Etape 10)----------------------*/
- 
+
+//  Sélection du formulaire
  let form = document.querySelector(".cart__order__form");
 
- //console.log(form.firstName);
-
+ /* ------- FIRSTNAME ------*/
 //  Ecouter la modification de l'input FIRSTNAME
 form.firstName.addEventListener("change", function() {
     validFirstName(this);
@@ -254,21 +234,21 @@ const validFirstName = function (inputFirstName){
     let firstNameRegExp = new RegExp (
         "^[a-zA-Z-]{2,20}$","g"
     );
+    //test de la regex
     let testFirstName = firstNameRegExp.test(inputFirstName.value); // retourne true ou false
+    //récupération du p avec msg erreur
     let textMsg = inputFirstName.nextElementSibling;
     //console.log(testFirstName);
     if(testFirstName == true) {
         textMsg.innerHTML = "Prénom valide";
-        /*textMsg.classList.remove("text-danger");
-        textMsg.classList.add("text-success");*/
+        return true;
     }else{
         textMsg.innerHTML = "Prénom non valide";
-       /* textMsg.classList.remove("text-success");
-        textMsg.classList.add("text-danger");*/
+        return false;
     }
 };
 
-
+/* ------- LASTNAME ------*/
 //  Ecouter la modification de l'input LASTNAME
 form.lastName.addEventListener("change", function() {
     validLastName(this);
@@ -279,21 +259,18 @@ const validLastName = function (inputLastName){
     let lastNameRegExp = new RegExp (
         "^[a-zA-Z-]{2,20}$","g"
     );
+    //(/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))/i);
     let testLastName = lastNameRegExp.test(inputLastName.value); // retourne true ou false
     let textMsg = inputLastName.nextElementSibling;
     //console.log(testLastName);
     if(testLastName == true) {
         textMsg.innerHTML = "Nom valide";
-        /*textMsg.classList.remove("text-danger");
-        textMsg.classList.add("text-success");*/
     }else{
         textMsg.innerHTML = "Nom non valide";
-       /* textMsg.classList.remove("text-success");
-        textMsg.classList.add("text-danger");*/
     }
 };
 
-
+/* ------- ADDRESS ------*/
 //  Ecouter la modification de l'input ADDRESS
 form.address.addEventListener("change", function() {
     validAddress(this);
@@ -309,15 +286,11 @@ const validAddress = function (inputAddress){
     //console.log(testAddress);
     if(testAddress == true) {
         textMsg.innerHTML = "Adresse valide";
-        /*textMsg.classList.remove("text-danger");
-        textMsg.classList.add("text-success");*/
     }else{
         textMsg.innerHTML = "Adresse non valide";
-       /* textMsg.classList.remove("text-success");
-        textMsg.classList.add("text-danger");*/
     }
 };
-
+/* ------- CITY ------*/
 //  Ecouter la modification de l'input CITY
 form.city.addEventListener("change", function() {
     validCity(this);
@@ -333,11 +306,77 @@ const validCity = function (inputCity){
     //console.log(testCity);
     if(testCity == true) {
         textMsg.innerHTML = "Ville valide";
-        /*textMsg.classList.remove("text-danger");
-        textMsg.classList.add("text-success");*/
     }else{
         textMsg.innerHTML = "Ville non valide";
-       /* textMsg.classList.remove("text-success");
-        textMsg.classList.add("text-danger");*/
     }
 };
+
+/* ------- EMAIL ------*/
+//  Ecouter la modification de l'input EMAIL
+form.email.addEventListener("change", function() {
+    validEmail(this);
+});
+
+const validEmail = function (inputEmail){
+    //création de la regex pour  validation email
+    let emailRegExp = new RegExp (
+        "^[a-zA-Z0-9.-_]+[@]{1}[a-zA-Z0-9.-_]+[.]{1}[a-z]{2,10}$","g"
+    );
+    //Test de l'expression régulière
+    let testEmail = emailRegExp.test(inputEmail.value); // retourne true ou false
+    let textMsg = inputEmail.nextElementSibling;
+    //console.log(testEmail);
+    if(testEmail == true) {
+        textMsg.innerHTML = "Email valide";
+        return true;
+    } else{
+        textMsg.innerHTML = "Email non valide";
+        return false;
+    }
+};
+
+
+/* ------------ ENVOI FORMULAIRE -----------*/
+
+//Objet contact contenant les informations du formulaire à envoyer à l'API
+const contact = {
+    firstName : firstName.value,
+    lastName : lastName.value,
+    address : address.value,
+    city : city.value,
+    email : email.value
+}
+console.log("contact");
+console.log(contact);
+
+
+//  Ecouter la soumission du FORMULAIRE
+form.addEventListener("submit", function(e) {
+    e.preventDefault(); //on arrête le comportement par défaut
+
+    if (validEmail(form.email) && validFirstName(form.firstName)){  // !!!!!!!MANQUE les autres éléments du formulaire
+        console.log("L'envoi du formulaire est en cours de validation");
+        form.submit();
+
+        //Mettre l'objet contact dans le localStorage
+        localStorage.setItem ("contact", JSON.stringify(contact));
+
+    } else {
+        console.log("Le formulaire n'est pas rempli correctement");
+    } 
+});
+
+
+
+/*Pour les routes POST, l’objet contact envoyé au serveur doit contenir les champs firstName,
+lastName, address, city et email. Le tableau des produits envoyé au back-end doit être un
+array de strings product-ID. Les types de ces champs et leur présence doivent être validés
+avant l’envoi des données au serveur*/
+
+//Mettre les informations du formulaire et les produits sélectionnés dans un objet à envoyer à l'API
+/*const aEnvoyer = {
+    savePanier,
+    contact
+};
+console.log("aEnvoyer")
+console.log(aEnvoyer)*/
