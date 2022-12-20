@@ -6,7 +6,7 @@ let panier = JSON.parse(localStorage.getItem("panier"));
 
 /*---------------------AFFICHER LES PRODUITS DU PANIER (Etape 8)----------------------*/ 
 
-if (panier === null || panier == 0) { //si le panier est vide ou égal 0
+if(panier === null || panier == 0) { //si le panier est vide ou égal 0
     console.log("Panier vide");
     document.querySelector("h1").innerHTML = "Votre panier est vide";
 } 
@@ -19,7 +19,6 @@ else { //s'il y a des produits dans le panier
             .then((data) => {
            // console.log(data);
             displayCartItem(data, panier[i]); 
-            addQuantityListener(panier[i].idProduit, panier[i].colorProduit);
             deleteItemListener(panier[i].idProduit, panier[i].colorProduit);   
         }) 
     }    
@@ -27,7 +26,7 @@ else { //s'il y a des produits dans le panier
 
 
 //Afficher la page Panier
-function displayCartItem (data, panier) {
+function displayCartItem(data, panier) {
     //console.log(data);
     document.querySelector("#cart__items").innerHTML += `<article class="cart__item" data-id="${panier.idProduit}" data-color="${panier.colorProduit}" data-price ="${data.price}">
                 <div class="cart__item__img">
@@ -57,58 +56,54 @@ function displayCartItem (data, panier) {
 
 /*---------------------CHANGER LA QUANTITE - input page panier (Etape 9)----------------------*/
 
-//function avec addEventListener pour modifier la quantité
-
-function addQuantityListener (idProduit, colorProduit) {
-    let cartItem = document.getElementsByClassName("cart__item"); //sélection de cart item 
-    console.log(idProduit);
-    console.log(colorProduit);
-            
-    for (let item of cartItem){
-        //console.log(item)
-        if (item.dataset.id == idProduit && item.dataset.color == colorProduit){ // si le produit a le même id ET la même couleur
-            let itemQuantities = item.getElementsByClassName("itemQuantity");
-            //itemQuantities[0].addEventListener("change", (event) => {  
-                //console.log("change");
-            //})
-        } 
-    }
-}
-
+//function pour modifier la quantité
 function updateQuantity(idProduit, colorProduit, value) {
-    console.log("eventListener invoked !!!");
-    console.log("Produit: " + idProduit + " - " + colorProduit + " - Qty: " + value);
-    //console.log(Number(value));
     quantityProduit = (Number(value));   
     console.log(quantityProduit);
-    localStorage.setItem("panier", JSON.stringify(panier))
-    console.log(panier)
+
+    updatePanier(idProduit, colorProduit, quantityProduit)
 }
 
+function updatePanier(idProduit, colorProduit, quantityProduit) {
+    // on récupère le panier
+    let panier = localStorage.getItem("panier")
+    
+    let choixProduitUser = {
+        idProduit : idProduit,
+        quantityProduit : quantityProduit,
+        colorProduit : colorProduit
+    };
+    // on convertit le panier de JSON à objet JS
+    let panierJson = JSON.parse(panier); 
 
-
-
-
-
+    panierJson.forEach(item => {  
+        // si le produit a le même id ET la même couleur   
+        if (item.idProduit == choixProduitUser.idProduit && item.colorProduit == choixProduitUser.colorProduit){  
+            item.quantityProduit = choixProduitUser.quantityProduit;
+        } 
+    }) 
+    localStorage.setItem("panier", JSON.stringify(panierJson));
+    //totalProduits()
+}
 
 /*---------------------SUPPRIMER UN PRODUIT (Etape 9)----------------------*/
 
-function deleteItemListener (){ //OK
+function deleteItemListener() { //OK
     
     // Sélection du bouton suppression
     const deleteCartItem = document.querySelectorAll(".deleteItem");
     
-    for (let item of deleteCartItem) {
+    for(let item of deleteCartItem) {
         // Ecoute le bouton suppression
         item.addEventListener("click", (e) => {
-            if (window.confirm("Etes-vous sûr de vouloir supprimer ce Kanap?")) {
+            if(window.confirm("Etes-vous sûr de vouloir supprimer ce Kanap?")) {
                 let article = item.closest("article");
                 // Supression de l'article du DOM
                 article.remove();
-                for (let i = 0, a = panier.length; i < a; i++) {
+                for(let i = 0, a = panier.length; i < a; i++) {
                     let foundProduct = panier.find((p) =>
-                            p.idProduit == article.dataset.id &&
-                            p.colorProduit == article.dataset.color
+                        p.idProduit == article.dataset.id &&
+                        p.colorProduit == article.dataset.color
                     );
                     // Filtre du PANIER, on garde les produits où on n'a pas cliqué
                     panier = panier.filter((p) => p != foundProduct);
@@ -125,7 +120,7 @@ function deleteItemListener (){ //OK
 //Calculer la quantité de produits qu'il y a dans le panier
 
 /*-------totalQuantity-------*/ //OK
-function totalProduits(){
+function totalProduits() {
     let totalArticle = 0;
     for(let product of panier){
         totalArticle += Number(product.quantityProduit);
@@ -136,7 +131,7 @@ function totalProduits(){
 
 
 /*-------totalPrice-------*/ //OK
-function totalPrice(){
+function totalPrice() {
     let totalQuantityPrice = 0;
 
     const cart = document.querySelectorAll(".cart__item");
@@ -152,7 +147,6 @@ function totalPrice(){
         //console.log(productPrice);
         //console.log(totalQuantityPrice);
     })
-    //updateQuantity;
     document.getElementById("totalPrice").innerHTML = totalQuantityPrice;
 }
 
@@ -167,7 +161,7 @@ function totalPrice(){
  /*---------------------PASSER LA COMMANDE (Etape 10)----------------------*/
 
 //  Sélection du formulaire
- let form = document.querySelector(".cart__order__form");
+let form = document.querySelector(".cart__order__form");
 /*
  // REGEX
  // Regex pour firstName et lastName
@@ -186,9 +180,9 @@ form.firstName.addEventListener("change", function() {
     validFirstName(this);
 });
 
-const validFirstName = function (inputFirstName){
+const validFirstName = function(inputFirstName) {
     //création de la regex pour  validation firstName
-    let firstNameRegExp = new RegExp (
+    let firstNameRegExp = new RegExp(
         "^[a-zA-Záàâäãåçéèêëíìîïñóòôöõúùûüýÿæœ-]{2,40}$","g"
     );
     //test de la regex
@@ -199,7 +193,7 @@ const validFirstName = function (inputFirstName){
     if(testFirstName == true) {
         textMsg.innerHTML = "Prénom valide";
         return true;
-    }else{
+    }else {
         textMsg.innerHTML = "Prénom non valide";
         return false;
     }
@@ -211,9 +205,9 @@ form.lastName.addEventListener("change", function() {
     validLastName(this);
 });
 
-const validLastName = function (inputLastName){
+const validLastName = function(inputLastName) {
     //création de la regex pour  validation lastName
-    let lastNameRegExp = new RegExp (
+    let lastNameRegExp = new RegExp(
         "^[a-zA-Záàâäãåçéèêëíìîïñóòôöõúùûüýÿæœ-]{2,40}$","g"
     );
     let testLastName = lastNameRegExp.test(inputLastName.value); // retourne true ou false
@@ -222,7 +216,7 @@ const validLastName = function (inputLastName){
     if(testLastName == true) {
         textMsg.innerHTML = "Nom valide";
         return true;
-    }else{
+    }else {
         textMsg.innerHTML = "Nom non valide";
         return false;
     }
@@ -234,9 +228,9 @@ form.address.addEventListener("change", function() {
     validAddress(this);
 });
 
-const validAddress = function (inputAddress){
+const validAddress = function(inputAddress) {
     //création de la regex pour  validation address
-    let addressRegExp = new RegExp (
+    let addressRegExp = new RegExp(
         "^[ 0-9a-zA-Záàâäãåçéèêëíìîïñóòôöõúùûüýÿ-]{2,50}$","g"
     );
     let testAddress = addressRegExp.test(inputAddress.value); // retourne true ou false
@@ -245,7 +239,7 @@ const validAddress = function (inputAddress){
     if(testAddress == true) {
         textMsg.innerHTML = "Adresse valide";
         return true;
-    }else{
+    }else {
         textMsg.innerHTML = "Adresse non valide";
         return false;
     }
@@ -256,9 +250,9 @@ form.city.addEventListener("change", function() {
     validCity(this);
 });
 
-const validCity = function (inputCity){
+const validCity = function(inputCity) {
     //création de la regex pour  validation city
-    let cityRegExp = new RegExp (
+    let cityRegExp = new RegExp(
         "^[a-zA-Z-áàâäãåçéèêëíìîïñóòôöõúùûüýÿ]{2,45}$","g"
     );
     let testCity = cityRegExp.test(inputCity.value); // retourne true ou false
@@ -267,7 +261,7 @@ const validCity = function (inputCity){
     if(testCity == true) {
         textMsg.innerHTML = "Ville valide";
         return true;
-    }else{
+    }else {
         textMsg.innerHTML = "Ville non valide";
         return false;
     }
@@ -279,9 +273,9 @@ form.email.addEventListener("change", function() {
     validEmail(this);
 });
 
-const validEmail = function (inputEmail){
+const validEmail = function(inputEmail){
     //création de la regex pour  validation email
-    let emailRegExp = new RegExp (
+    let emailRegExp = new RegExp(
         "^[a-zA-Z0-9.-_]+[@]{1}[a-zA-Z0-9.-_]+[.]{1}[a-z]{2,10}$","g"
     );
     //Test de l'expression régulière
@@ -291,7 +285,7 @@ const validEmail = function (inputEmail){
     if(testEmail == true) {
         textMsg.innerHTML = "Email valide";
         return true;
-    } else{
+    } else {
         textMsg.innerHTML = "Email non valide";
         return false;
     }
@@ -302,45 +296,45 @@ const validEmail = function (inputEmail){
 
 //Objet contact contenant les informations du formulaire à envoyer à l'API
 const contact = {
-    firstName : firstName.value, //form.firstName.value, ???etc etc
-    lastName : lastName.value,
-    address : address.value,
-    city : city.value,
-    email : email.value
+    firstName : form.firstName.value, 
+    lastName : form.lastName.value,
+    address : form.address.value,
+    city : form.city.value,
+    email : form.email.value
 }
-console.log("contact");
-console.log(contact);
+//console.log("contact");
+//console.log(contact);
 
 
 //  Ecouter la soumission du FORMULAIRE
 form.addEventListener("submit", function(e) {
-    e.preventDefault(); //on arrête le comportement par défaut
-    //console.log(form.firstName.value);
-    //console.log(form.lastName.value);
-    //console.log(form.address.value);
-    //console.log(form.city.value);
-    //console.log(form.email.value);
+    e.preventDefault();
+   /* console.log(form.firstName.value);
+    console.log(form.lastName.value);
+    console.log(form.address.value);
+    console.log(form.city.value);
+    console.log(form.email.value);*/
 
-    /*console.log(validFirstName(form.firstName))
-    console.log(validLastName(form.lastName))
-    console.log(validAddress(form.address))
-    console.log(validCity(form.city))
-    console.log(validEmail(form.email))*/
+    /*console.log(validFirstName(form.firstName));
+    console.log(validLastName(form.lastName));
+    console.log(validAddress(form.address));
+    console.log(validCity(form.city));
+    console.log(validEmail(form.email));*/
 
+    // Si tous les champs du formulaire sont valides = true
     if(validFirstName(form.firstName) &&
     validLastName(form.lastName) &&
     validAddress(form.address) &&
     validCity(form.city) &&
-    validEmail(form.email))
-    
-    {
-        console.log("L'envoi du formulaire est en cours de validation");
+    validEmail(form.email)) {
+        //console.log("L'envoi du formulaire est en cours de validation");
+        // Soumission du formulaire
         form.submit();
         //Mettre l'objet contact dans le localStorage
-        localStorage.setItem ("contact", JSON.stringify(contact));
-        console.log(contact);
+        localStorage.setItem("contact", JSON.stringify(contact));
+        //console.log(contact);
     } else {
-        console.log("Le formulaire n'est pas rempli correctement");
+        //console.log("Le formulaire n'est pas rempli correctement");
     } 
 });
 
@@ -352,12 +346,12 @@ array de strings product-ID. Les types de ces champs et leur présence doivent �
 avant l’envoi des données au serveur*/
 
 //Mettre les informations du formulaire et les produits sélectionnés dans un objet à envoyer à l'API
-const aEnvoyer = {
+const client = {
     panier,
     contact
 };
-console.log("aEnvoyer")
-console.log(aEnvoyer)
+/*console.log("client")
+console.log(client)*/
 
 
 
