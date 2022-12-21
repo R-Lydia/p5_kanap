@@ -56,7 +56,7 @@ function displayCartItem(data, panier) {
 
 /*---------------------CHANGER LA QUANTITE - input page panier (Etape 9)----------------------*/
 
-//function pour modifier la quantité
+// Function pour modifier la quantité
 function updateQuantity(idProduit, colorProduit, value) {
     quantityProduit = (Number(value));   
     console.log(quantityProduit);
@@ -64,6 +64,7 @@ function updateQuantity(idProduit, colorProduit, value) {
     updatePanier(idProduit, colorProduit, quantityProduit)
 }
 
+// Function pour mettre à jour le panier avec le changement de quantité
 function updatePanier(idProduit, colorProduit, quantityProduit) {
     // on récupère le panier
     let panier = localStorage.getItem("panier")
@@ -83,11 +84,13 @@ function updatePanier(idProduit, colorProduit, quantityProduit) {
         } 
     }) 
     localStorage.setItem("panier", JSON.stringify(panierJson));
-    //totalProduits()
+    totalProduits()
+    totalPrice();
 }
 
 /*---------------------SUPPRIMER UN PRODUIT (Etape 9)----------------------*/
 
+// Function pour supprimer un Kanap du panier et de l'affichage (DOM)
 function deleteItemListener() { //OK
     
     // Sélection du bouton suppression
@@ -117,39 +120,32 @@ function deleteItemListener() { //OK
 
 
 /*---------------------CALCULER LA QUANTITE TOTALE ET LE PRIX TOTAL (Etape 9)----------------------*/
-//Calculer la quantité de produits qu'il y a dans le panier
 
-/*-------totalQuantity-------*/ //OK
+// Fonction pour calculer la quantité de produits qu'il y a dans le panier
 function totalProduits() {
     let totalArticle = 0;
-    for(let product of panier){
-        totalArticle += Number(product.quantityProduit);
-        //console.log(totalArticle);
-    }
+    const cart = document.querySelectorAll(".cart__item");
+
+    cart.forEach((cart) => {                   
+        let quantityProduit = Number(cart.querySelector(".itemQuantity").value);
+        totalArticle += quantityProduit;
+    })
     document.getElementById("totalQuantity").innerHTML = totalArticle;
 }
 
-
-/*-------totalPrice-------*/ //OK
+// Fonction pour calculer le prix total des produits dans le panier
 function totalPrice() {
     let totalQuantityPrice = 0;
-
     const cart = document.querySelectorAll(".cart__item");
-    //console.log(cart);
 
     cart.forEach((cart) => {
-        let productPrice = Number(cart.dataset.price);                        
-            
+        let productPrice = Number(cart.dataset.price);                            
         let quantityProduit = Number(cart.querySelector(".itemQuantity").value);
 
         totalQuantityPrice += quantityProduit * productPrice;
-        //console.log(quantityProduit);
-        //console.log(productPrice);
-        //console.log(totalQuantityPrice);
     })
     document.getElementById("totalPrice").innerHTML = totalQuantityPrice;
 }
-
 
 
 
