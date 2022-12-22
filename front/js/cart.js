@@ -1,8 +1,6 @@
-//Déclaration de la variable "savePanier" pour récupérer les données du LocalStorage dans laquelle on met la key "panier" et les values ("choixProduitUser")qui sont dans le localStorage
+//Déclaration de la variable "panier" pour récupérer les données du localStorage
 //JSON.parse = Convertir les données du localStorage de JSON en Objet JS
 let panier = JSON.parse(localStorage.getItem("panier"));
-//console.log(savePanier);
-
 
 /*---------------------AFFICHER LES PRODUITS DU PANIER (Etape 8)----------------------*/ 
 
@@ -25,7 +23,7 @@ else { //s'il y a des produits dans le panier
 }           
 
 
-//Afficher la page Panier
+// Function pour afficher la page Panier
 function displayCartItem(data, panier) {
     //console.log(data);
     document.querySelector("#cart__items").innerHTML += `<article class="cart__item" data-id="${panier.idProduit}" data-color="${panier.colorProduit}" data-price ="${data.price}">
@@ -66,7 +64,7 @@ function updateQuantity(idProduit, colorProduit, value) {
 
 // Function pour mettre à jour le panier avec le changement de quantité
 function updatePanier(idProduit, colorProduit, quantityProduit) {
-    // on récupère le panier
+    // récupérer le panier
     let panier = localStorage.getItem("panier")
     
     let choixProduitUser = {
@@ -74,7 +72,7 @@ function updatePanier(idProduit, colorProduit, quantityProduit) {
         quantityProduit : quantityProduit,
         colorProduit : colorProduit
     };
-    // on convertit le panier de JSON à objet JS
+    // convertir le panier de JSON à objet JS
     let panierJson = JSON.parse(panier); 
 
     panierJson.forEach(item => {  
@@ -121,7 +119,7 @@ function deleteItemListener() { //OK
 
 /*---------------------CALCULER LA QUANTITE TOTALE ET LE PRIX TOTAL (Etape 9)----------------------*/
 
-// Fonction pour calculer la quantité de produits qu'il y a dans le panier
+// Function pour calculer la quantité de produits qu'il y a dans le panier
 function totalProduits() {
     let totalArticle = 0;
     const cart = document.querySelectorAll(".cart__item");
@@ -133,7 +131,7 @@ function totalProduits() {
     document.getElementById("totalQuantity").innerHTML = totalArticle;
 }
 
-// Fonction pour calculer le prix total des produits dans le panier
+// Function pour calculer le prix total des produits dans le panier
 function totalPrice() {
     let totalQuantityPrice = 0;
     const cart = document.querySelectorAll(".cart__item");
@@ -148,49 +146,30 @@ function totalPrice() {
 }
 
 
-
-
-
-
-
-
  /*---------------------PASSER LA COMMANDE (Etape 10)----------------------*/
 
 //  Sélection du formulaire
 let form = document.querySelector(".cart__order__form");
-/*
- // REGEX
- // Regex pour firstName et lastName
- let nameRegExp = new RegExp("^[a-zA-Záàâäãåçéèêëíìîïñóòôöõúùûüýÿæœ-]{2,40}$","g");
- // Regex pour address
- let addressRegExp = new RegExp("^[0-9a-zA-Záàâäãåçéèêëíìîïñóòôöõúùûüýÿ-]{2,50}$","g");
-// Regex pour city
-let cityRegExp = new RegExp("^[a-zA-Z-áàâäãåçéèêëíìîïñóòôöõúùûüýÿ]{2,45}$","g");
-// Regex pour email
-let emailRegExp = new RegExp("^[a-zA-Z0-9.-_]+[@]{1}[a-zA-Z0-9.-_]+[.]{1}[a-z]{2,10}$","g");
-*/
 
  /* ------- FIRSTNAME ------*/
 //  Ecouter la modification de l'input FIRSTNAME
 form.firstName.addEventListener("change", function() {
     validFirstName(this);
 });
-
 const validFirstName = function(inputFirstName) {
     //création de la regex pour  validation firstName
-    let firstNameRegExp = new RegExp(
-        "^[a-zA-Záàâäãåçéèêëíìîïñóòôöõúùûüýÿæœ-]{2,40}$","g"
-    );
+    let firstNameRegExp = new RegExp("^[a-zA-Záàâäãåçéèêëíìîïñóòôöõúùûüýÿæœ-]{2,40}$","g");
     //test de la regex
     let testFirstName = firstNameRegExp.test(inputFirstName.value); // retourne true ou false
     //récupération du p avec msg erreur
     let textMsg = inputFirstName.nextElementSibling;
-    //console.log(testFirstName);
     if(testFirstName == true) {
-        textMsg.innerHTML = "Prénom valide";
+        textMsg.innerHTML = "";
+        form.firstName.style.border = "3px solid lightgreen";
         return true;
     }else {
         textMsg.innerHTML = "Prénom non valide";
+        form.firstName.style.border = "3px solid red";
         return false;
     }
 };
@@ -200,20 +179,19 @@ const validFirstName = function(inputFirstName) {
 form.lastName.addEventListener("change", function() {
     validLastName(this);
 });
-
 const validLastName = function(inputLastName) {
     //création de la regex pour  validation lastName
-    let lastNameRegExp = new RegExp(
-        "^[a-zA-Záàâäãåçéèêëíìîïñóòôöõúùûüýÿæœ-]{2,40}$","g"
-    );
+    let lastNameRegExp = new RegExp("^[ a-zA-Záàâäãåçéèêëíìîïñóòôöõúùûüýÿæœ\\'-]{2,40}$","g");
     let testLastName = lastNameRegExp.test(inputLastName.value); // retourne true ou false
     let textMsg = inputLastName.nextElementSibling;
     //console.log(testLastName);
     if(testLastName == true) {
-        textMsg.innerHTML = "Nom valide";
+        textMsg.innerHTML = "";
+        form.lastName.style.border = "3px solid lightgreen";
         return true;
     }else {
         textMsg.innerHTML = "Nom non valide";
+        form.lastName.style.border = "3px solid red";
         return false;
     }
 };
@@ -223,42 +201,41 @@ const validLastName = function(inputLastName) {
 form.address.addEventListener("change", function() {
     validAddress(this);
 });
-
 const validAddress = function(inputAddress) {
     //création de la regex pour  validation address
-    let addressRegExp = new RegExp(
-        "^[ 0-9a-zA-Záàâäãåçéèêëíìîïñóòôöõúùûüýÿ-]{2,50}$","g"
-    );
+    let addressRegExp = new RegExp("^[ 0-9a-zA-Záàâäãåçéèêëíìîïñóòôöõúùûüýÿ\\'-]{2,50}$","g");
     let testAddress = addressRegExp.test(inputAddress.value); // retourne true ou false
     let textMsg = inputAddress.nextElementSibling;
     //console.log(testAddress);
     if(testAddress == true) {
-        textMsg.innerHTML = "Adresse valide";
+        textMsg.innerHTML = "";
+        form.address.style.border = "3px solid lightgreen";
         return true;
     }else {
         textMsg.innerHTML = "Adresse non valide";
+        form.address.style.border = "3px solid red";
         return false;
     }
 };
+
 /* ------- CITY ------*/
 //  Ecouter la modification de l'input CITY
 form.city.addEventListener("change", function() {
     validCity(this);
 });
-
 const validCity = function(inputCity) {
     //création de la regex pour  validation city
-    let cityRegExp = new RegExp(
-        "^[a-zA-Z-áàâäãåçéèêëíìîïñóòôöõúùûüýÿ]{2,45}$","g"
-    );
+    let cityRegExp = new RegExp("^[ a-zA-Z-áàâäãåçéèêëíìîïñóòôöõúùûüýÿ]{2,45}$","g");
     let testCity = cityRegExp.test(inputCity.value); // retourne true ou false
     let textMsg = inputCity.nextElementSibling;
     //console.log(testCity);
     if(testCity == true) {
-        textMsg.innerHTML = "Ville valide";
+        textMsg.innerHTML = "";
+        form.city.style.border = "3px solid lightgreen";
         return true;
     }else {
         textMsg.innerHTML = "Ville non valide";
+        form.city.style.border = "3px solid red";
         return false;
     }
 };
@@ -268,54 +245,39 @@ const validCity = function(inputCity) {
 form.email.addEventListener("change", function() {
     validEmail(this);
 });
-
 const validEmail = function(inputEmail){
     //création de la regex pour  validation email
-    let emailRegExp = new RegExp(
-        "^[a-zA-Z0-9.-_]+[@]{1}[a-zA-Z0-9.-_]+[.]{1}[a-z]{2,10}$","g"
-    );
+    let emailRegExp = new RegExp("^[a-zA-Z0-9._//-]+[@]{1}[a-zA-Z0-9.-_]+[.]{1}[a-z]{2,10}$","g");
     //Test de l'expression régulière
     let testEmail = emailRegExp.test(inputEmail.value); // retourne true ou false
     let textMsg = inputEmail.nextElementSibling;
     //console.log(testEmail);
     if(testEmail == true) {
-        textMsg.innerHTML = "Email valide";
+        textMsg.innerHTML = "";
+        form.email.style.border = "3px solid lightgreen";
         return true;
     } else {
         textMsg.innerHTML = "Email non valide";
+        form.email.style.border = "3px solid red";
         return false;
     }
 };
 
-
 /* ------------ ENVOI FORMULAIRE -----------*/
 
-//Objet contact contenant les informations du formulaire à envoyer à l'API
-const contact = {
-    firstName : form.firstName.value, 
-    lastName : form.lastName.value,
-    address : form.address.value,
-    city : form.city.value,
-    email : form.email.value
-}
-//console.log("contact");
-//console.log(contact);
-
-
-//  Ecouter la soumission du FORMULAIRE
+// Ecouter la soumission du FORMULAIRE
 form.addEventListener("submit", function(e) {
     e.preventDefault();
-   /* console.log(form.firstName.value);
-    console.log(form.lastName.value);
-    console.log(form.address.value);
-    console.log(form.city.value);
-    console.log(form.email.value);*/
-
-    /*console.log(validFirstName(form.firstName));
-    console.log(validLastName(form.lastName));
-    console.log(validAddress(form.address));
-    console.log(validCity(form.city));
-    console.log(validEmail(form.email));*/
+    // Objet contact contenant les informations du formulaire à envoyer à l'API
+    const contact = {
+        firstName : form.firstName.value, 
+        lastName : form.lastName.value,
+        address : form.address.value,
+        city : form.city.value,
+        email : form.email.value
+    }
+    console.log("contact")
+    console.log(contact);
 
     // Si tous les champs du formulaire sont valides = true
     if(validFirstName(form.firstName) &&
@@ -323,31 +285,44 @@ form.addEventListener("submit", function(e) {
     validAddress(form.address) &&
     validCity(form.city) &&
     validEmail(form.email)) {
-        //console.log("L'envoi du formulaire est en cours de validation");
-        // Soumission du formulaire
-        form.submit();
-        //Mettre l'objet contact dans le localStorage
+        console.log("L'envoi du formulaire est en cours de validation");
+        // Mettre l'objet contact dans le localStorage
         localStorage.setItem("contact", JSON.stringify(contact));
-        //console.log(contact);
     } else {
-        //console.log("Le formulaire n'est pas rempli correctement");
+        console.log("Le formulaire n'est pas rempli correctement");
     } 
-});
+    
+    // Tableau avec les Id des produits du panier à envoyer à l'API
+    let products = []
+    for (i = 0; i < panier.length; i++) {
+        products.push(panier[i].idProduit)
+    }
+    console.log(products)
 
 
-
-/*Pour les routes POST, l’objet contact envoyé au serveur doit contenir les champs firstName,
-lastName, address, city et email. Le tableau des produits envoyé au back-end doit être un
-array de strings product-ID. Les types de ces champs et leur présence doivent être validés
-avant l’envoi des données au serveur*/
-
-//Mettre les informations du formulaire et les produits sélectionnés dans un objet à envoyer à l'API
-const client = {
-    panier,
-    contact
-};
-/*console.log("client")
-console.log(client)*/
-
-
-
+    fetch("http://localhost:3000/api/products/order", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(
+            commandeClient = {
+                contact,
+                products  
+            }
+        )
+    })
+        .then((res) => res.json())
+        .then((data) => {
+            // Renvoyer à la page confirmation
+            window.location.href =  `./confirmation.html?orderId=${data.orderId}`;
+            // Effacer les données dans le localStorage
+            localStorage.clear();
+            console.log(data);
+        })
+        .catch(function (err) {
+            console.log(err);
+            alert("erreur");
+        });
+  
+}); //fin du form.addEventListener
