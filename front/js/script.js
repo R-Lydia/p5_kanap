@@ -1,10 +1,10 @@
-//Requêter l'API pour demander l'ensemble des produits
-
+// Requêter l'API pour demander l'ensemble des produits
 fetch("http://localhost:3000/api/products")
-  .then((res) => res.json()) //pour récupérer la réponse au format json
+  // Pour récupérer la réponse au format json
+  .then((res) => res.json()) 
   .then((data) => {
-    console.log(data);
-    //utiliser une boucle pour créer les éléments pour chaque produit
+
+    // Utiliser une boucle pour créer les éléments pour chaque produit
     data.forEach(produit => {
       document.querySelector("#items").innerHTML += `<a href="./product.html?id=${produit._id}">
                                                         <article>
