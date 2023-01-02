@@ -17,8 +17,7 @@ else {
             .then((res) => res.json()) 
             .then((data) => {
             displayCartItem(data, panier[i]); 
-            deleteItemListener(panier[i].idProduit, panier[i].colorProduit);
-            //updatePanier(idProduit, colorProduit, quantityProduit) 
+            deleteItemListener(panier[i].idProduit, panier[i].colorProduit); 
             totalPrice(data, panier); 
         }) 
     }    
@@ -48,8 +47,6 @@ function displayCartItem(data, panier) {
                 </div>
                 </article>`;
     totalProduits();
-    //totalPrice(data);
-    //updatePanier(idProduit, colorProduit, quantityProduit)
 }
 
 
@@ -155,7 +152,7 @@ function totalProduits() {
 
 
 
-/* 0) Non validé par l'évaluateur car pas assez sécurisé (dataset dans le DOM) et peut être modifié par l'utilisateur
+/* // 0) Non validé par l'évaluateur car pas assez sécurisé (dataset dans le DOM) et peut être modifié par l'utilisateur
 // Function pour calculer le prix total des produits dans le panier
 function totalPrice() {
     let totalQuantityPrice = 0;
@@ -172,7 +169,7 @@ function totalPrice() {
 }
 */
 
-
+/*
 // 1) forEach = Ne donne que le résultat du dernier produit pour totalQuantityPrice
 // Function pour calculer le prix total des produits dans le panier
 function totalPrice(data) {
@@ -204,10 +201,10 @@ function totalPrice(data) {
     })
     document.getElementById("totalPrice").innerHTML = totalQuantityPrice;   
 }
+*/
 
 
-
-/* // 2) for = Ne donne que le résultat du dernier produit pour totalQuantityPrice
+// 2) for = Ne donne que le résultat du dernier produit pour totalQuantityPrice
 // Function pour calculer le prix total des produits dans le panier
 function totalPrice(data) {
     console.log("data =", data)
@@ -229,120 +226,45 @@ function totalPrice(data) {
               
             console.log("quantityProduit =", quantityProduit)
             console.log("productPrice =", productPrice)
-            console.log("totalQuantityPrice =", totalQuantityPrice)   
-        }     
+            console.log("totalQuantityPrice =", totalQuantityPrice) 
+        }    
     }     
     document.getElementById("totalPrice").innerHTML = totalQuantityPrice;   
 }
-*/
-
-
-
-
-
-
 
 
 
 /*
+// 3) For of = Ne donne que le résultat du dernier produit pour totalQuantityPrice
 // Function pour calculer le prix total des produits dans le panier
 function totalPrice(data) {
-  // console.log (panier)
-    console.log("data =", data)
-    let totalQuantityPrice = 0;
-    const cart = document.querySelectorAll(".cart__item");
+    console.log("panier =", panier)
+    let total = 0;
 
-        // Récupérer pour chaque cart, la valeur de la quantité et le prix et multiplier
+    //const cart = document.querySelectorAll(".cart__item");
+    //console.log("cart =", cart)
+    
+    for(let product of panier){
+        console.log ("product =", product)
 
-        for(let i = 0; i < cart.length; i++) {
-        //cart.forEach((cart) => {  
-            //if(data._id == cart.dataset.id){
-                //console.log("cartfor =", cart.length)
-                console.log("cart =", cart) 
-                console.log("data_id =", data._id)
-                console.log("cart[i].dataset.id =", cart[i].dataset.id)
+        let productPrice = Number(`${data.price}`);
+        //console.log("prix du produit=", productPrice)
 
+        if(data._id == product.idProduit){
+            console.log("ID data =", data._id)
+            console.log("ID produit =", product.idProduit)
 
-                console.log("if =", (data._id == cart[i].dataset.id) )
-            if(data._id == cart[i].dataset.id){
-                //console.log("if =", (data._id == cart.idProduit) )
-                //console.log("cart =", cart) 
-                //console.log("data_id =", data._id)
-                //console.log("cart.idProduit =", cart.dataset.id)
-                //const cart = document.querySelectorAll(".cart__item");
-                let productPrice = data.price;
-                //let quantityProduit = Number(cart.querySelector(".itemQuantity").value);
-                let quantityProduit = Number(cart[i].querySelector(".itemQuantity").value);
+            quantity = Number(product.quantityProduit)
+            total += quantity * productPrice;
 
-                totalQuantityPrice += quantityProduit * productPrice;
-            
-                console.log("quantityProduit =", quantityProduit)
-                console.log("productPrice =", productPrice)
-                console.log("totalQuantityPrice =", totalQuantityPrice)   
-            }     
-        }//)
-       
-    document.getElementById("totalPrice").innerHTML = totalQuantityPrice;   
+            console.log("quantité produit =", quantity)
+            console.log("prix produit =", productPrice)
+            console.log("total =", total)
+        }
+    } 
+    document.getElementById("totalPrice").innerHTML = total; 
 }
 */
-
-
-
-
-
-
-/*
-function totalPrice() {
-    let panier = JSON.parse(localStorage.getItem("panier"));
-    let prixTotal = 0;
-    for(let i = 0; i < panier.length; i++) {
-      // Récupérer les informations sur le produit à l'aide de son identifiant
-      let productInfo = getProductInfo(panier[i].idProduit);
-      // Ajouter le prix du produit au prix total
-      prixTotal += productInfo.price;
-    }
-    console.log(prixTotal);
-  }
-  
-  function getProductInfo(productId) {
-    // Faire une requête à une API ou une base de données pour récupérer les informations sur le produit
-    // ...
-    return productInfo;
-  }
-*/
-
-
-
-
-/*
-// Function pour calculer le prix total des produits dans le panier
-function totalPrice(data) {
-    let totalQuantityPrice = 0;
-    const cart = document.querySelectorAll(".cart__item");
-
-    // Récupérer pour chaque cart, la valeur de la quantité et le prix et multiplier
-        console.log("data =", data)
-       
-        cart.forEach((cart) => {  
-            console.log("cart =", cart)  
-
-            let productPrice = `${data.price};`
-            //let productPrice = data.price;
-            let quantityProduit = Number(cart.querySelector(".itemQuantity").value);
-            
-        totalQuantityPrice += quantityProduit * productPrice;
-        console.log("totalQuantityPrice =", totalQuantityPrice)
-        console.log("quantityProduit =", quantityProduit)
-        console.log("productPrice =", productPrice)
-        })
-    document.getElementById("totalPrice").innerHTML = totalQuantityPrice;
-}
-*/
-
-
-
-
-
 
 
 
