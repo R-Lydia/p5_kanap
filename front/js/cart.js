@@ -5,7 +5,7 @@ let panier = JSON.parse(localStorage.getItem("panier"));
 /*--------------------- AFFICHER LES PRODUITS DU PANIER ----------------------*/ 
 
 // SI le panier est vide ou égal 0
-if(panier === null || panier == 0) { 
+if(panier == null || panier == 0) { 
     document.querySelector("h1").innerHTML = "Votre panier est vide";
 } 
 // S'IL y a des produits dans le panier
@@ -17,14 +17,16 @@ else {
             .then((res) => res.json()) 
             .then((data) => {
             displayCartItem(data, panier[i]); 
-            deleteItemListener(panier[i].idProduit, panier[i].colorProduit);   
+            deleteItemListener(panier[i].idProduit, panier[i].colorProduit);
+            //updatePanier(idProduit, colorProduit, quantityProduit) 
+            totalPrice(data, panier); 
         }) 
     }    
 }           
 
 // Function pour afficher la page Panier
 function displayCartItem(data, panier) {
-    document.querySelector("#cart__items").innerHTML += `<article class="cart__item" data-id="${panier.idProduit}" data-color="${panier.colorProduit}" data-price ="${data.price}">
+    document.querySelector("#cart__items").innerHTML += `<article class="cart__item" data-id="${panier.idProduit}" data-color="${panier.colorProduit}">
                 <div class="cart__item__img">
                 <img src="${data.imageUrl}"  alt="${data.altTxt}">
                 </div>
@@ -46,8 +48,12 @@ function displayCartItem(data, panier) {
                 </div>
                 </article>`;
     totalProduits();
-    totalPrice();
+    //totalPrice(data);
+    //updatePanier(idProduit, colorProduit, quantityProduit)
 }
+
+
+
 
 
 /*--------------------- CHANGER LA QUANTITE - input page panier ----------------------*/
@@ -60,12 +66,16 @@ function updateQuantity(idProduit, colorProduit, value) {
     if (quantityProduit < 1 || quantityProduit > 100) {
         alert ("Veuillez renseigner une quantité entre 1 et 100 pour ajouter cet article")
         // Réactualiser l'affichage en rafraichissant la page du panier
-        window.location.href = "cart.html"; 
+        window.location.reload(); 
     } 
     else if (quantityProduit >= 1 || quantityProduit <= 100) {   
         updatePanier(idProduit, colorProduit, quantityProduit)
     }
 }
+
+
+
+
 
 // Function pour mettre à jour le panier avec le changement de quantité
 function updatePanier(idProduit, colorProduit, quantityProduit) {
@@ -88,8 +98,12 @@ function updatePanier(idProduit, colorProduit, quantityProduit) {
     }) 
     localStorage.setItem("panier", JSON.stringify(panierJson));
     totalProduits()
-    totalPrice();
+    totalPrice(data);
 }
+
+
+
+
 
 
 /*--------------------- SUPPRIMER UN PRODUIT ----------------------*/
@@ -115,11 +129,12 @@ function deleteItemListener() {
                     // Filtre du PANIER, garder les produits où on n'a pas cliqué
                     panier = panier.filter((p) => p != foundProduct);
                     localStorage.panier = JSON.stringify(panier);
-                    window.location.href = "cart.html";
                 }
+                totalProduits()
+                totalPrice(data);
             }
         });
-    }
+    }  
 }
 
 
@@ -138,6 +153,9 @@ function totalProduits() {
     document.getElementById("totalQuantity").innerHTML = totalArticle;
 }
 
+
+
+/* 0) Non validé par l'évaluateur car pas assez sécurisé (dataset dans le DOM) et peut être modifié par l'utilisateur
 // Function pour calculer le prix total des produits dans le panier
 function totalPrice() {
     let totalQuantityPrice = 0;
@@ -152,6 +170,185 @@ function totalPrice() {
     })
     document.getElementById("totalPrice").innerHTML = totalQuantityPrice;
 }
+*/
+
+
+// 1) forEach = Ne donne que le résultat du dernier produit pour totalQuantityPrice
+// Function pour calculer le prix total des produits dans le panier
+function totalPrice(data) {
+    console.log("data =", data)
+    let totalQuantityPrice = 0;
+    const cart = document.querySelectorAll(".cart__item");
+
+    // Récupérer pour chaque cart, la valeur de la quantité et le prix et multiplier
+    //Pour chaque produit
+    cart.forEach((cart) => {  
+            //Si l'id du produit est égal à l'id du produit du data
+        if(cart.dataset.id == data._id){
+
+            console.log("cart =", cart) 
+            console.log("data_id =", data._id)
+            console.log("cart.idProduit =", cart.dataset.id)
+
+            // on récupère le prix dans le data
+            let productPrice = data.price;
+            //on récupère la valeur de l'input quantité
+            let quantityProduit = Number(cart.querySelector(".itemQuantity").value);
+            // on multiplie la quantité et le prix pour chaque produit et on additionne
+            totalQuantityPrice += quantityProduit * productPrice;
+            
+            console.log("quantityProduit =", quantityProduit)
+            console.log("productPrice =", productPrice)
+            console.log("totalQuantityPrice =", totalQuantityPrice)       
+        }     
+    })
+    document.getElementById("totalPrice").innerHTML = totalQuantityPrice;   
+}
+
+
+
+/* // 2) for = Ne donne que le résultat du dernier produit pour totalQuantityPrice
+// Function pour calculer le prix total des produits dans le panier
+function totalPrice(data) {
+    console.log("data =", data)
+    let totalQuantityPrice = 0;
+    const cart = document.querySelectorAll(".cart__item");
+  
+    // Récupérer pour chaque cart, la valeur de la quantité et le prix et multiplier
+    for(let i = 0; i < cart.length; i++) {
+        console.log("cart =", cart) 
+        console.log("data_id =", data._id)
+        console.log("cart[i].dataset.id =", cart[i].dataset.id)
+        console.log("if =", (data._id == cart[i].dataset.id))
+
+        if(data._id == cart[i].dataset.id){
+            let productPrice = data.price;
+            let quantityProduit = Number(cart[i].querySelector(".itemQuantity").value);
+  
+            totalQuantityPrice += quantityProduit * productPrice;
+              
+            console.log("quantityProduit =", quantityProduit)
+            console.log("productPrice =", productPrice)
+            console.log("totalQuantityPrice =", totalQuantityPrice)   
+        }     
+    }     
+    document.getElementById("totalPrice").innerHTML = totalQuantityPrice;   
+}
+*/
+
+
+
+
+
+
+
+
+
+/*
+// Function pour calculer le prix total des produits dans le panier
+function totalPrice(data) {
+  // console.log (panier)
+    console.log("data =", data)
+    let totalQuantityPrice = 0;
+    const cart = document.querySelectorAll(".cart__item");
+
+        // Récupérer pour chaque cart, la valeur de la quantité et le prix et multiplier
+
+        for(let i = 0; i < cart.length; i++) {
+        //cart.forEach((cart) => {  
+            //if(data._id == cart.dataset.id){
+                //console.log("cartfor =", cart.length)
+                console.log("cart =", cart) 
+                console.log("data_id =", data._id)
+                console.log("cart[i].dataset.id =", cart[i].dataset.id)
+
+
+                console.log("if =", (data._id == cart[i].dataset.id) )
+            if(data._id == cart[i].dataset.id){
+                //console.log("if =", (data._id == cart.idProduit) )
+                //console.log("cart =", cart) 
+                //console.log("data_id =", data._id)
+                //console.log("cart.idProduit =", cart.dataset.id)
+                //const cart = document.querySelectorAll(".cart__item");
+                let productPrice = data.price;
+                //let quantityProduit = Number(cart.querySelector(".itemQuantity").value);
+                let quantityProduit = Number(cart[i].querySelector(".itemQuantity").value);
+
+                totalQuantityPrice += quantityProduit * productPrice;
+            
+                console.log("quantityProduit =", quantityProduit)
+                console.log("productPrice =", productPrice)
+                console.log("totalQuantityPrice =", totalQuantityPrice)   
+            }     
+        }//)
+       
+    document.getElementById("totalPrice").innerHTML = totalQuantityPrice;   
+}
+*/
+
+
+
+
+
+
+/*
+function totalPrice() {
+    let panier = JSON.parse(localStorage.getItem("panier"));
+    let prixTotal = 0;
+    for(let i = 0; i < panier.length; i++) {
+      // Récupérer les informations sur le produit à l'aide de son identifiant
+      let productInfo = getProductInfo(panier[i].idProduit);
+      // Ajouter le prix du produit au prix total
+      prixTotal += productInfo.price;
+    }
+    console.log(prixTotal);
+  }
+  
+  function getProductInfo(productId) {
+    // Faire une requête à une API ou une base de données pour récupérer les informations sur le produit
+    // ...
+    return productInfo;
+  }
+*/
+
+
+
+
+/*
+// Function pour calculer le prix total des produits dans le panier
+function totalPrice(data) {
+    let totalQuantityPrice = 0;
+    const cart = document.querySelectorAll(".cart__item");
+
+    // Récupérer pour chaque cart, la valeur de la quantité et le prix et multiplier
+        console.log("data =", data)
+       
+        cart.forEach((cart) => {  
+            console.log("cart =", cart)  
+
+            let productPrice = `${data.price};`
+            //let productPrice = data.price;
+            let quantityProduit = Number(cart.querySelector(".itemQuantity").value);
+            
+        totalQuantityPrice += quantityProduit * productPrice;
+        console.log("totalQuantityPrice =", totalQuantityPrice)
+        console.log("quantityProduit =", quantityProduit)
+        console.log("productPrice =", productPrice)
+        })
+    document.getElementById("totalPrice").innerHTML = totalQuantityPrice;
+}
+*/
+
+
+
+
+
+
+
+
+
+
+
 
 
  /*--------------------- VERIFIER LE FORMULAIRE ----------------------*/
