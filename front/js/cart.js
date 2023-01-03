@@ -1,9 +1,16 @@
 //Déclaration de la variable "panier" pour récupérer les données du localStorage
 //JSON.parse = Convertir les données du localStorage de JSON en Objet JS
 let panier = JSON.parse(localStorage.getItem("panier"));
+var totalQuantityPrice = 0;
+refreshCart();
 
 /*--------------------- AFFICHER LES PRODUITS DU PANIER ----------------------*/ 
-    var totalQuantityPrice = 0;
+// Function pour récupérer les produits du panier
+function refreshCart(){
+    totalQuantityPrice = 0;
+    panier = JSON.parse(localStorage.getItem("panier"));
+    document.querySelector("#cart__items").innerHTML ="";
+
     // SI le panier est vide ou égal 0
     if(panier == null || panier == 0) { 
         document.querySelector("h1").innerHTML = "Votre panier est vide";
@@ -22,6 +29,7 @@ let panier = JSON.parse(localStorage.getItem("panier"));
             }) 
         }    
     }           
+}
 
 // Function pour afficher la page Panier
 function displayCartItem(data, panier) {
@@ -50,9 +58,6 @@ function displayCartItem(data, panier) {
 }
 
 
-
-
-
 /*--------------------- CHANGER LA QUANTITE - input page panier ----------------------*/
 
 // Function pour modifier la quantité
@@ -69,10 +74,6 @@ function updateQuantity(idProduit, colorProduit, value) {
         updatePanier(idProduit, colorProduit, quantityProduit)
     }
 }
-
-
-
-
 
 // Function pour mettre à jour le panier avec le changement de quantité
 function updatePanier(idProduit, colorProduit, quantityProduit) {
@@ -94,21 +95,15 @@ function updatePanier(idProduit, colorProduit, quantityProduit) {
         }
     }) 
     localStorage.setItem("panier", JSON.stringify(panierJson));
-    //totalQuantityPrice = 0;
-    totalProduits()
-    totalPrice(data);
+    totalProduits();
+    refreshCart();
 }
-
-
-
-
 
 
 /*--------------------- SUPPRIMER UN PRODUIT ----------------------*/
 
 // Function pour supprimer un Kanap du panier et de l'affichage (DOM)
 function deleteItemListener() { 
-    //totalQuantityPrice = 0;
     // Sélection du bouton suppression
     const deleteCartItem = document.querySelectorAll(".deleteItem");
     
@@ -128,11 +123,11 @@ function deleteItemListener() {
                     panier = panier.filter((p) => p != foundProduct);
                     localStorage.panier = JSON.stringify(panier);
                 }
-                totalProduits()
-                totalPrice(data);
+            totalProduits()
+            refreshCart();
             }
         });
-    }  
+    }    
 }
 
 
@@ -151,46 +146,24 @@ function totalProduits() {
     document.getElementById("totalQuantity").innerHTML = totalArticle;
 }
 
-
 // Function pour calculer le prix total des produits dans le panier
 function totalPrice(data) {
-    console.log("data =", data)
-    //var totalQuantityPrice = 0;
     const cart = document.querySelectorAll(".cart__item");
-
     // Récupérer pour chaque cart, la valeur de la quantité et le prix et multiplier
     //Pour chaque produit
     cart.forEach((cart) => {  
-            //Si l'id du produit est égal à l'id du produit du data
+        //Si l'id du produit est égal à l'id du produit du data
         if(cart.dataset.id == data._id){
-
-            console.log("cart =", cart) 
-            console.log("data_id =", data._id)
-            console.log("cart.idProduit =", cart.dataset.id)
-
             // on récupère le prix dans le data
             let productPrice = data.price;
             //on récupère la valeur de l'input quantité
             let quantityProduit = Number(cart.querySelector(".itemQuantity").value);
             // on multiplie la quantité et le prix pour chaque produit et on additionne
-            totalQuantityPrice = totalQuantityPrice + quantityProduit * productPrice;
-            
-            console.log("quantityProduit =", quantityProduit)
-            console.log("productPrice =", productPrice)
-            console.log("totalQuantityPrice =", totalQuantityPrice)      
-        }  
-           
+            totalQuantityPrice = totalQuantityPrice + quantityProduit * productPrice;     
+        }         
     })
     document.getElementById("totalPrice").innerHTML = totalQuantityPrice;   
 }
-
-
-
-
-
-
-
-
 
 
  /*--------------------- VERIFIER LE FORMULAIRE ----------------------*/
