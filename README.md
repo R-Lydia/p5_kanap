@@ -2,6 +2,8 @@
 Projet 5 OpenClassrooms - Construire un site e-commerce en JavaScript
 
 ## Objectifs
+Rendre dynamique une page web à l'aide de JavaScript
+
 Créer un plan de test pour une application
 
 Valider des données issues de sources externes
